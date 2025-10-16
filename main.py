@@ -4,6 +4,8 @@ with open("sample.txt", "r") as f:
 The flower was yellow and bright.
 It grew beside a calm river.
 
+import matplotlib.pyplot as plt
+
 def number_of_lines_f(text):
     number_of_lines = 0
     for line in text:
@@ -75,14 +77,42 @@ def top_10_most_common_words(text):
 
 
             
-def distribution_of_words(text):
+def distribution_of_words_lengths(text):
     average_word_length_per_line = []
+    number_of_line = 0
     for line in text:
         words = line.split()
         words = 0
-        number of character
+        number_of_line += 1
+
+        number_of_character = []
         for word in words:
+            words += 1
             number_of_characters = len(word)
+            number_of_character.append(number_of_characters)
+        average_word_length_per_line.append(sum(number_of_character)/(words))
+    
+
+            
+def distribution_of_words_lengths(text):
+    different_character_legnth = []
+
+    for line in text:
+        words = line.split()
+        words = 0
+
+        number_of_character = []
+        for word in words:
+            words += 1
+            number_of_characters = len(word)
+            number_of_character.append(number_of_characters)
+    
+    
+    for i in (1, 100):
+
+
+
+
 
 
 def unique_words(text):
@@ -105,25 +135,21 @@ def unique_words(text):
     return list_of_words_in_order[ : :-10]
 
 
-def words_that_appear_once(text):
-        list_of_words = []
+def words_that_appear_once_f(text):
+    list_of_words = []
     for line in text:
         words = line.split()
         for word in words:
             list_of_words.append(word.lower())
-    
-    frequencies = []
-    for word in list_of_words :
-        frequencies.append(list_of_words.count(word))
-    frequencies.sort(reverse=True)
-    
-    list_of_words_in_order = []
+            
+    words_that_appear_once = []
     for word in list_of_words:
-        if list_of_words.count(word) == frequencies[0]:
+        if list_of_words.count(word) == 1:
             frequencies.pop(0)
-            list_of_words_in_order.append(word)
-    return list_of_words_in_order[ : :-10]
+            words_that_appear_once.append(word)
+    return words_that_appear_once
 
+def letter_frequency(text):
 
 
 

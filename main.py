@@ -6,6 +6,33 @@ It grew beside a calm river.
 
 import matplotlib.pyplot as plt
 
+while True: #keep looping forever — until I manually tell it to stop
+    print ('''--- Menu ---
+    1. Load text file
+    2. display basic statistics
+    3. word frequency analysis
+    4. sentence analysis
+    5. character analysis
+    6. export resultat
+    7. exit''')
+    choice = int(input('enter your choice'))
+    if choice == 1 :
+        print (1)   # load text file 
+    elif choice == 2:
+        print (2)   # display basic statistics
+    elif choice == 3:
+        print (3)   # word frequency analysis
+    elif choice == 4:
+        print (4)   # sentence analysis
+    elif choice == 5:
+        print (5)   # character analysis
+    elif choice == 6:
+        print (6)   # export resultat
+    else: 
+        break      #break the loop
+        print (7)   # exit
+    print('press enter to continue...')
+    
 def number_of_lines_f(text):
     number_of_lines = 0
     for line in text:

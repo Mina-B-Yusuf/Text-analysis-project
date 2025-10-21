@@ -19,7 +19,7 @@ def process_file(text):
     shortest_sentence = None
     longest_sentence = None
 
-    #-------------line variables ---------
+    #-------------line variables ----------
     for line in text:
         number_of_lines += 1
         words_per_line = 0
@@ -27,10 +27,18 @@ def process_file(text):
         sentence_lengths.append(len(words))
 
         #--------------short and long sentence -----------
-        if len(words) < len(shortest_sentence) or shortest_sentence == None :
+        if shortest_sentence == None:
             shortest_sentence = line.strip()
-        elif len(words) > len(longest_sentence) or longest_sentence == None:
+        elif shortest_sentence != None:
+            if len(words) < len(shortest_sentence):
+                shortest_sentence = line.strip()
+        
+        if longest_sentence == None:
             longest_sentence = line.strip()
+        elif longest_sentence != None:
+            if len(words) > len(longest_sentence):
+                longest_sentence = line.strip()
+
 
         #----------Character variables----------
         for char in line:
@@ -45,7 +53,7 @@ def process_file(text):
                     upper_case_letters_number += 1
 
             #-------Punctuation Varaibles  ----------
-            elif char in ".,!?;:-—()[]\"'" and not in :
+            elif char in ".,!?;:-—()[]\"'" :
                 number_of_punctuation += 1 
     
 
@@ -62,6 +70,18 @@ def process_file(text):
         words_per_lines_list.append(words_per_line)
 
             
-    return number_of_lines, number_of_spaces, words_list, number_of_letters, number_of_punctuation, word_lengths, sentence_lengths, shortest_sentence, longest_sentence, words_per_lines_list, upper_case_letters_number
+    return {
+        'number_of_lines'            : number_of_lines           , 
+        'number_of_spaces'           : number_of_spaces          , 
+        'words_dic'                  : words_dic                 ,
+        'character_dic'              : characters_dic            , 
+        'number_of_punctuation'      : number_of_punctuation     , 
+        'word_lengths'               : word_lengths              ,
+        'sentence_lengths'           : sentence_lengths          ,
+        'shortest_sentence'          : shortest_sentence         ,
+        'longest_sentence'           : longest_sentence          ,
+        'words_per_lines_list'       : words_per_lines_list      ,
+        'upper_case_letters_number'  : upper_case_letters_number
+    }
 
-number_of_lines, number_of_spaces, words_list, number_of_letters, number_of_punctuation, word_lengths, sentence_lengths, shortest_sentence, longest_sentence, words_per_lines_list, upper_case_letters_number = process_file(text)
+proccesed_text_data = process_file(text)

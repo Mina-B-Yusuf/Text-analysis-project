@@ -63,12 +63,14 @@ def process_file(text):
 
 number_of_lines, number_of_spaces, words_list, number_of_letters, number_of_punctuation, word_lengths, sentence_lengths, shortest_sentence, longest_sentence, words_per_lines_list, upper_case_letters_number = process_file(text)
 
-##functions
+##functions - word analysis
 def top_10_most_common_words(text):
     top_10 = sorted(words_list.items(), key=lambda x: x[1], reverse=True)[:10]
     return top_10
 
+##functions - sentence analysis
 
+##functions - character analysis
 
 
 ##Display 

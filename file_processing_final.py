@@ -1,6 +1,10 @@
-with open("sample.txt", "r", encoding="utf-8") as file:
-    text = file.readlines() 
- 
+import json
+
+with open("sample.txt", "r", encoding="utf-8") as f:
+    text = f.readlines()
+
+with open("processed_data.json", "w", encoding="utf-8") as json_file:
+    json.dump(processed_text_data, json_file, indent=4, ensure_ascii=False)
 
 
 def process_file(text):
@@ -17,15 +21,12 @@ def process_file(text):
     longest_sentence = None
     upper_case_letters_number = 0
 
-    #unfinishes sentence from previous line
-    sentence_from_prev_line = ""
-
     #-------------line variables ----------
     for line in text:
         line = line.strip()
         if line == "":
             continue
-
+    sentence_from_prev_line = ""
         # 🔹 Combine previous leftover if there is one
         if sentence_from_prev_line != "":
             line = sentence_from_prev_line + " " + line
@@ -109,3 +110,5 @@ def process_file(text):
         'words_per_lines_list'       : words_per_lines_list      ,
         'upper_case_letters_number'  : upper_case_letters_number
     }
+
+proccesed_text_data = process_file(text)

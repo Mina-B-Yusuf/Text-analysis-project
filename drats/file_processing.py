@@ -2,47 +2,62 @@
 
 
 def process_file(text):
-    words_dic = {}
-    characters_dic = {}
+
+
     words_per_lines_list = []
     number_of_letters = 0
     word_lengths = []
-    sentence_lengths = []
     number_of_punctuation = 0
-    number_of_lines = 0
-    number_of_spaces = 0
-    shortest_sentence = None
-    longest_sentence = None
+
 
     #-------------line variables ----------
+    sentence_lengths = []
+    number_of_lines = 0
     for line in text:
         number_of_lines += 1
         words_per_line = 0
         words = line.split()
         sentence_lengths.append(len(words))
 
-        #--------------short and long sentence -----------
+    #--------------short and long sentence -----------
+    shortest_sentence = None
+    longest_sentence = None
         if shortest_sentence == None or len(words) < len(shortest_sentence.split()):
             shortest_sentence = line.strip()
         if longest_sentence == None or len(words) > len(longest_sentence.split()):
             longest_sentence = line.strip()
 
-        #----------Character variables----------
+    #----------Character variables----------
+    number_of_spaces = 0
+    characters_dic = {
+    "letters": {
+        "uppercase_letters": {},
+        "lowercase_letters": {}
+    },
+    "punctuation_number": {}
+    }
         for char in line:
             if char == ' ':
                 number_of_spaces += 1
-            elif char.isalpha():
-                if char not in characters_dic:
-                    characters_dic[char] = 1
+            elif char.isupper():
+                if char not in uppercase_letters:
+                    uppercase_letters[char] = 1
                 else:
-                    characters_dic[char] += 1
-
+                    uppercase_letters[char] += 1
+            elif char.islower():
+                if char not in lowercase_letters :
+                    lowercase_letters[char] = 1
+                else:
+                    lowercase_letters[char] += 1
 
             #-------Punctuation Varaibles  ----------
             elif char in ".,!?;:-—()[]\"'" :
-                number_of_punctuation += 1 
-    
-
+                if char not in punctuation_number:
+                    punctuation_number[char] = 1
+                else:
+                    punctuation_number[char] += 1 
+     
+    words_dic = {}
         #--------------word variables ----------
         for word in words:
             word = word.lower().strip(".,!?;:-—()[]\"'")

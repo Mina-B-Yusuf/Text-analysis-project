@@ -1,6 +1,12 @@
  
 #importing data from processing the text 
+import json
 
+# 🔹 Load the saved data
+with open("processed_data.json", "r", encoding="utf-8") as file:
+    data = json.load(file)
+
+    
 number_of_words = sum(data[words_dic].values()) #getting the number of word from th dictionary
 total_characters = data[number_of_letters] + data[number_of_punctuation]  #adding all the characters together
 average_words_per_line = round((sum(data[words_per_lines_list])) // (data[number_of_lines]), 2)

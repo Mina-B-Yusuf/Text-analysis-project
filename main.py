@@ -88,11 +88,7 @@ while True: #keep looping forever — until I manually tell it to stop
     if choice == 1 : # load text file
         print (1) 
     elif choice == 2: # display basic statistics
-        print ('Number of lines: ', number_of_lines)
-        print ('Number of words: ', number_of_words)
-        print ('Number of characters: ', sum(number_of_letters, number_of_punctuation))
-        print ('Average word per line: ', ((sum(words_per_lines)) // (number_of_lines)) )
-        print ('Average characters per word: ' (sum(sum(number_of_letters, number_of_punctuation)))//(number_of_words), )
+        
 
     elif choice == 3: # word frequency analysis
         print ('The top 10 most common words are: ', top_10)   

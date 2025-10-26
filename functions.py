@@ -48,33 +48,63 @@ print("Average characters per word: ", average_characters_per_word)
 #========================================================================================================================
 # WORD ANALYSIS
 #========================================================================================================================
-
 def word_analysis(data):
+
     #---------------------- getting data ----------------------------------------------
     word_dic = data["words_dic_all"]["words_dic"]
+    word_lengths = data["words_dic_all"]["word_lengths"]
 
     #---------------------- sorting according to their frequency ----------------------
     pairs = list(word_dic.items())
     items = [[count, word] for (word, count) in pairs]
     items.sort(reverse=True)
 
-    #---------------------- Top 10 words ----------------------
-    top_words = [(word, count) for count, word in items[:10]]
+    total_words = sum(word_dic.values())
+
+    #---------------------- word length statistics --------------------------------
+    if len(word_lengths) > 0:
+        shortest_word_length = min(word_lengths)
+        longest_word_length = max(word_lengths)
+        average_word_length = round(sum(word_lengths) / len(word_lengths), 1)
+    else:
+        shortest_word_length = 0
+        longest_word_length = 0
+        average_word_length = 0
 
     #---------------------- unique words ----------------------
     unique_word_count = len(word_dic)
 
     #---------------------- words appearing once ----------------------
-    words_appearing_once = [word for word, count in word_dic.items() if count == 1]
+    words_appearing_once = []
+    for word in word_dic:
+        if word_dic[word] == 1:
+            words_appearing_once.append(word)
 
-    
-    return
+    words_appearing_once_count = len(words_appearing_once)
 
+    #---------------------- display ----------------------
+    print('--- Word Analysis for "sample.txt" ---')
+    print("Top 10 most common words:")
 
-top_words = top_10_most_common_words(data)
+    rank = 1
+    for pair in items[:10]:
+        count = pair[0]
+        word = pair[1]
+        percentage = round((count / total_words) * 100, 1)
+        print("", rank, ".", word, count, "times (", str(percentage) + "%)", sep=" ")
+        rank = rank + 1
 
+    print("Word length statistics:")
+    print(" Shortest word:", shortest_word_length, "characters")
+    print(" Longest word:", longest_word_length, "characters")
+    print(" Average word length:", average_word_length, "characters")
+    print("Unique words:", unique_word_count)
+    print("Words appearing only once:", words_appearing_once_count)
 
-#---------------------- display ----------------------
-print("---- Top 10 Most Common Words ----")
-for word, count in top_words:
-    print(word, count, sep="\t")
+#========================================================================================================================
+# Sentence ANALYSIS
+#========================================================================================================================
+
+def sentence_analysis(data):
+    number_of_sentences = len(data["sentence_lengths"])
+    average_word_per_sentence = round((sum(data["sentence_lengths"]) / len(data["sentence_lengths"])), 2)

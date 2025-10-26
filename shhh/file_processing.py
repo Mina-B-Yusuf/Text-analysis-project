@@ -47,7 +47,6 @@ def word_var_function(words, data):
 #=============================== SENTENCE VARIBALES ==============================================
 
 def sentence_var_function(sentence, data):
-    data["number_of_lines"] += 1
     data["sentence_lengths"].append(len(sentence.split()))
     return data
 
@@ -84,7 +83,6 @@ def process_file(text):
     #=============================== Initialize global counters and storage ==============================================
 
     data = {
-        "number_of_lines": 0,
         "sentence_lengths": [],
         "shortest_sentence": None,
         "longest_sentence": None,

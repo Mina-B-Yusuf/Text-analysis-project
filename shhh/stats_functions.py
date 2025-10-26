@@ -49,26 +49,12 @@ print("Average characters per word: ", average_characters_per_word)
 # WORD ANALYSIS
 #========================================================================================================================
 
-def word_analysis(data):
-    #---------------------- getting data ----------------------------------------------
-    word_dic = data["words_dic_all"]["words_dic"]
-
-    #---------------------- sorting according to their frequency ----------------------
-    pairs = list(word_dic.items())
+def top_10_most_common_words(data):
+    wordCounts = data["words_dic_all"]["words_dic"]
+    pairs = list(wordCounts.items())
     items = [[count, word] for (word, count) in pairs]
     items.sort(reverse=True)
-
-    #---------------------- Top 10 words ----------------------
-    top_words = [(word, count) for count, word in items[:10]]
-
-    #---------------------- unique words ----------------------
-    unique_word_count = len(word_dic)
-
-    #---------------------- words appearing once ----------------------
-    words_appearing_once = [word for word, count in word_dic.items() if count == 1]
-
-    
-    return
+    return [(word, count) for count, word in items[:10]]
 
 
 top_words = top_10_most_common_words(data)

@@ -1,7 +1,5 @@
 
 
-
-
 #========================================================================================================================
 # VARIABLE FUNCTIONS
 #========================================================================================================================
@@ -74,6 +72,9 @@ def analyze_sentence(sentence, data):
     return data
 
 
+
+
+
 #========================================================================================================================
 # FILE PROCESSING FUNCTION
 #========================================================================================================================
@@ -141,4 +142,4 @@ processed_text_data = process_file(text)
 with open("processed_data.json", "w", encoding="utf-8") as json_file:
     json.dump(processed_text_data, json_file, indent=4, ensure_ascii=False)
 
-print("✅ Processing complete. Results saved to processed_data.json")
+print("Processing complete. Results saved to processed_data.json")

@@ -1,4 +1,5 @@
 
+import json
 
 #========================================================================================================================
 # VARIABLE FUNCTIONS
@@ -52,6 +53,8 @@ def word_var_function(words, data):
             data["words_dic_all"]["words_dic"][word] = 1
     data["words_dic_all"]["words_per_lines_list"].append(words_per_line)
     return data
+
+
 
 #=============================== SENTENCE VARIBALES ==============================================
 

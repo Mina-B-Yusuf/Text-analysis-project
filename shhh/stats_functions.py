@@ -49,18 +49,115 @@ print("Average characters per word: ", average_characters_per_word)
 # WORD ANALYSIS
 #========================================================================================================================
 
-def top_10_most_common_words(data):
-    wordCounts = data["words_dic_all"]["words_dic"]
-    pairs = list(wordCounts.items())
+def word_analysis(data):
+
+    #---------------------- getting data ----------------------------------------------
+    word_dic = data["words_dic_all"]["words_dic"]
+    word_lengths = data["words_dic_all"]["word_lengths"]
+
+    #---------------------- sorting according to their frequency ----------------------
+    pairs = list(word_dic.items())
     items = [[count, word] for (word, count) in pairs]
     items.sort(reverse=True)
-    return [(word, count) for count, word in items[:10]]
 
+    total_words = sum(word_dic.values())
 
-top_words = top_10_most_common_words(data)
+    #---------------------- word length statistics --------------------------------
+    if len(word_lengths) > 0:
+        shortest_word_length = min(word_lengths)
+        longest_word_length = max(word_lengths)
+        average_word_length = round(sum(word_lengths) / len(word_lengths), 1)
+    else:
+        shortest_word_length = 0
+        longest_word_length = 0
+        average_word_length = 0
 
+    #---------------------- unique words ----------------------
+    unique_word_count = len(word_dic)
 
-#---------------------- display ----------------------
-print("---- Top 10 Most Common Words ----")
-for word, count in top_words:
-    print(word, count, sep="\t")
+    #---------------------- words appearing once ----------------------
+    words_appearing_once = []
+    for word in word_dic:
+        if word_dic[word] == 1:
+            words_appearing_once.append(word)
+
+    words_appearing_once_count = len(words_appearing_once)
+
+    #---------------------- display ----------------------
+    print('--- Word Analysis for "sample.txt" ---')
+    print("Top 10 most common words:")
+
+    rank = 1
+    for pair in items[:10]:
+        count = pair[0]
+        word = pair[1]
+        percentage = round((count / total_words) * 100, 1)
+        print("", rank, ".", word, count, "times (", str(percentage) + "%)", sep=" ")
+        rank = rank + 1
+
+    print("Word length statistics:")
+    print(" Shortest word:", shortest_word_length, "characters")
+    print(" Longest word:", longest_word_length, "characters")
+    print(" Average word length:", average_word_length, "characters")
+    print("Unique words:", unique_word_count)
+    print("Words appearing only once:", words_appearing_once_count)
+
+#========================================================================================================================
+# SENTENCE ANALYSIS
+#========================================================================================================================
+def sentence_analysis(data):
+
+    #---------------------- sentence counts and lengths ----------------------
+    number_of_sentences = len(data["sentence_lengths"])
+
+    if number_of_sentences > 0:
+        average_word_per_sentence = round((sum(data["sentence_lengths"]) / number_of_sentences), 2)
+    else:
+        average_word_per_sentence = 0
+
+    #---------------------- shortest and longest sentence ----------------------
+    shortest_sentence_text = data["shortest_sentence"]
+    longest_sentence_text = data["longest_sentence"]
+
+    shortest_sentence_length = len(shortest_sentence_text.split())
+    longest_sentence_length = len(longest_sentence_text.split())
+
+    #---------------------- sentence length distribution ----------------------
+    sentence_lengths = data["sentence_lengths"]
+    length_counts = {}
+
+    for length in sentence_lengths:
+        if length not in length_counts:
+            length_counts[length] = 1
+        else:
+            length_counts[length] += 1
+
+    pairs = list(length_counts.items())
+    items = [[count, length] for (length, count) in pairs]
+    items.sort(reverse=True)
+
+    #---------------------- display ----------------------
+    print('--- Sentence Analysis for "sample.txt" ---')
+    print("Total sentences:", number_of_sentences)
+    print("Average words per sentence:", average_word_per_sentence)
+    print("Shortest sentence:", shortest_sentence_length, "words")
+    print("Longest sentence:", longest_sentence_length, "words")
+    print("Shortest sentence text:", shortest_sentence_text)
+    print("Longest sentence text:", longest_sentence_text[0:100], "...")
+
+    print("Sentence length distribution (top 5):")
+    count = 0
+    for pair in items:
+        freq = pair[0]
+        length = pair[1]
+        print("", length, "words:", freq, "sentences")
+        count = count + 1
+        if count == 5:
+            break
+
+    return
+
+#========================================================================================================================
+# CHARACTER ANALYSIS
+#========================================================================================================================
+

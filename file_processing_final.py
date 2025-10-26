@@ -1,12 +1,5 @@
 import json
 
-with open("sample.txt", "r", encoding="utf-8") as f:
-    text = f.readlines()
-
-with open("processed_data.json", "w", encoding="utf-8") as json_file:
-    json.dump(processed_text_data, json_file, indent=4, ensure_ascii=False)
-
-
 
 #========================================= functions =============================================
 
@@ -38,7 +31,7 @@ def character_variables_function(sentence, characters_dic):
 
 
 ##sentence length 
-def shortest_and_longest_setence(sentence):
+def shortest_and_longest_sentence(words, sentence, shortest_sentence, longest_sentence):
     if shortest_sentence == None or len(words) < len(shortest_sentence.split()):
         shortest_sentence = sentence
     if longest_sentence == None or len(words) > len(longest_sentence.split()):
@@ -63,10 +56,10 @@ def word_var_function(words, words_dic_all):
     return words_dic_all
 
 ##sentence variables
-def sentence_var_function(sentence):
+def sentence_var_function(sentence, number_of_lines, sentence_lengths):
     number_of_lines += 1
-    sentence_lengths 
-    return 
+    sentence_lengths.apppend(len(sentence)) 
+    return number_of_lines, sentence_lengths
 
 
 
@@ -75,7 +68,9 @@ def sentence_var_function(sentence):
 
 
 def process_file(text):
-    #============intialize ==============
+    # ==================================================================
+    # Initialize global counters and storage
+    # ==================================================================
     #word 
     words = sentence.split()
     words_dic_all = {
@@ -100,38 +95,41 @@ def process_file(text):
     }
     number_of_letters = 0
 
-    #-------------line variables ----------
+    # =================================================================
+    # MAIN LOOP — Read each line and detect sentences
+    # =================================================================
 
-    #============detecting sentence ==============
+    sentence_from_prev_line = ""  # ✅ only once, before the loop starts
+
     for line in text:
         line = line.strip()
         if line == "":
             continue
-    sentence_from_prev_line = ""
-        # 🔹 Combine previous leftover if there is one
+
+        # Combine previous leftover if there is one
         if sentence_from_prev_line != "":
             line = sentence_from_prev_line + " " + line
-            sentence_from_prev_line = ""
+            sentence_from_prev_line = ""  # now we clear it after merging
 
         start_i = 0
         i = 0
 
 
 
-        # ---------- detect sentence-ending punctuation ----------
+
+        #====================detect sentence-ending punctuation ===================
         while i < len(line):
             if line[i] in ".!?":  # found sentence end
                 sentence = line[start_i:i+1].strip()
                 start_i = i + 1   # next sentence starts after punctuation
 
                 # Now treat the sentence like you treated each line before ↓↓↓
-                number_of_lines += 1
+                number_of_lines, sentence_lengths = sentence_var_function(sentence, number_of_lines, sentence_lengths)
                 words_per_line = 0
                 words = sentence.split()
-                sentence_lengths.append(len(words))
 
                 # shortest and longest sentence
-                shortest_sentence, longest_sentence = shortest_and_longest_setence(sentence)
+                shortest_sentence, longest_sentence = shortest_and_longest_sentence(words, sentence, shortest_sentence, longest_sentence)
 
                 # character variables
                 characters_dic = character_variables_function(sentence, characters_dic)
@@ -159,17 +157,20 @@ def process_file(text):
 
     # return like before
     return {
-        'number_of_lines'            : number_of_lines           , 
-        'number_of_spaces'           : number_of_spaces          , 
-        'words_dic'                  : words_dic                 ,
-        'characters_dic'             : characters_dic            , 
-        'number_of_punctuation'      : number_of_punctuation     , 
-        'word_lengths'               : word_lengths              ,
-        'sentence_lengths'           : sentence_lengths          ,
-        'shortest_sentence'          : shortest_sentence         ,
-        'longest_sentence'           : longest_sentence          ,
-        'words_per_lines_list'       : words_per_lines_list      ,
-        'upper_case_letters_number'  : upper_case_letters_number
+        "number_of_lines": number_of_lines,
+        "characters_dic": characters_dic,
+        "words_dic_all": words_dic_all,
+        "sentence_lengths": sentence_lengths,
+        "shortest_sentence": shortest_sentence,
+        "longest_sentence": longest_sentence
     }
 
-proccesed_text_data = process_file(text)
+with open("sample.txt", "r", encoding="utf-8") as f:
+    text = f.readlines()
+
+processed_text_data = process_file(text)
+
+with open("processed_data.json", "w", encoding="utf-8") as json_file:
+    json.dump(processed_text_data, json_file, indent=4, ensure_ascii=False)
+
+print("✅ Processing complete. Results saved to processed_data.json")

@@ -7,21 +7,102 @@ with open("processed_data.json", "w", encoding="utf-8") as json_file:
     json.dump(processed_text_data, json_file, indent=4, ensure_ascii=False)
 
 
+
+#========================================= functions =============================================
+
+##character varaibles 
+def character_variables_function(sentence, characters_dic):
+    for char in sentence:
+        if char.isupper():
+            # uppercase letters
+            if char not in characters_dic["letters"]["uppercase"]:
+                characters_dic["letters"]["uppercase"][char] = 1
+            else:
+                characters_dic["letters"]["uppercase"][char] += 1
+
+        elif char.islower():
+            # lowercase letters
+            if char not in characters_dic["letters"]["lowercase"]:
+                characters_dic["letters"]["lowercase"][char] = 1
+            else:
+                characters_dic["letters"]["lowercase"][char] += 1
+
+        elif char in ".,!?;:-—()[]\"'":
+            # punctuation marks
+            if char not in characters_dic["punctuation"]:
+                characters_dic["punctuation"][char] = 1
+            else:
+                characters_dic["punctuation"][char] += 1
+
+    return characters_dic
+
+
+##sentence length 
+def shortest_and_longest_setence(sentence):
+    if shortest_sentence == None or len(words) < len(shortest_sentence.split()):
+        shortest_sentence = sentence
+    if longest_sentence == None or len(words) > len(longest_sentence.split()):
+        longest_sentence = sentence  
+    return shortest_sentence, longest_sentence
+
+## word variable 
+def word_var_function(words, words_dic_all):
+    words_per_line = 0
+
+    for word in words:
+        word = word.lower().strip(".,!?;:-—()[]\"'")
+        words_per_line += 1
+        words_dic_all["word_lengths"].append(len(word))
+
+        if word in words_dic_all["words_dic"]:
+            words_dic_all["words_dic"][word] += 1
+        else:
+            words_dic_all["words_dic"][word] = 1
+
+    words_dic_all["words_per_lines_list"].append(words_per_line)
+    return words_dic_all
+
+##sentence variables
+def sentence_var_function(sentence):
+    number_of_lines += 1
+    sentence_lengths 
+    return 
+
+
+
+
+#========================================= processing file =============================================
+
+
 def process_file(text):
-    words_dic = {}
-    characters_dic = {}
-    words_per_lines_list = []
-    number_of_letters = 0
-    word_lengths = []
-    sentence_lengths = []
-    number_of_punctuation = 0
-    number_of_lines = 0
-    number_of_spaces = 0
+    #============intialize ==============
+    #word 
+    words = sentence.split()
+    words_dic_all = {
+        "words_dic": {},
+        "word_lengths": [],
+        "words_per_lines_list": []
+    }
+
+    #sentence 
     shortest_sentence = None
     longest_sentence = None
-    upper_case_letters_number = 0
+    number_of_lines = 0
+    sentence_lengths = []
+
+    #char 
+    characters_dic = {
+        "letters": {
+            "uppercase": {},
+            "lowercase": {}
+        },
+        "punctuation": {}
+    }
+    number_of_letters = 0
 
     #-------------line variables ----------
+
+    #============detecting sentence ==============
     for line in text:
         line = line.strip()
         if line == "":
@@ -34,6 +115,8 @@ def process_file(text):
 
         start_i = 0
         i = 0
+
+
 
         # ---------- detect sentence-ending punctuation ----------
         while i < len(line):
@@ -48,37 +131,15 @@ def process_file(text):
                 sentence_lengths.append(len(words))
 
                 # shortest and longest sentence
-                if shortest_sentence == None or len(words) < len(shortest_sentence.split()):
-                    shortest_sentence = sentence
-                if longest_sentence == None or len(words) > len(longest_sentence.split()):
-                    longest_sentence = sentence
+                shortest_sentence, longest_sentence = shortest_and_longest_setence(sentence)
 
                 # character variables
-                for char in sentence:
-                    if char == ' ':
-                        number_of_spaces += 1
-                    elif char.isalpha():
-                        number_of_letters += 1
-                        if char not in characters_dic:
-                            characters_dic[char] = 1
-                        else:
-                            characters_dic[char] += 1
-                        if char.isupper():
-                            upper_case_letters_number += 1
-                    elif char in ".,!?;:-—()[]\"'":
-                        number_of_punctuation += 1 
+                characters_dic = character_variables_function(sentence, characters_dic)
 
                 # word variables
-                for word in words:
-                    word = word.lower().strip(".,!?;:-—()[]\"'")
-                    words_per_line += 1
-                    word_lengths.append(len(word))
-                    if word in words_dic:
-                        words_dic[word] += 1
-                    else:
-                        words_dic[word] = 1
+                words_dic_all = word_var_function(words, words_dic_all)
 
-                words_per_lines_list.append(words_per_line)
+
 
             i += 1
 

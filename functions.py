@@ -26,7 +26,7 @@ def basic_statistics(data):
 
     return number_of_words, total_characters, average_words_per_line, average_characters_per_word
 
-
+number_of_words, total_characters, average_words_per_line, average_characters_per_word = basic_statistics(data)
 #=================display =======================
 print("---- Basic Statistics ----")
 print("Number of lines: ", data["number_of_lines"])
@@ -48,7 +48,7 @@ def top_10_most_common_words(data):
     return [(word, count) for count, word in items[:10]]
 
 
-
+[(word, count) for count, word in items[:10]]  = top_10_most_common_words(data)
 
 
 

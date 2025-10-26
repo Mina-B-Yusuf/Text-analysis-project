@@ -8,21 +8,30 @@
 
 def character_variables_function(sentence, data):
     for char in sentence:
-        if char.isupper():
-            if char not in data["characters_dic"]["letters"]["uppercase"]:
-                data["characters_dic"]["letters"]["uppercase"][char] = 1
-            else:
-                data["characters_dic"]["letters"]["uppercase"][char] += 1
-        elif char.islower():
-            if char not in data["characters_dic"]["letters"]["lowercase"]:
-                data["characters_dic"]["letters"]["lowercase"][char] = 1
-            else:
-                data["characters_dic"]["letters"]["lowercase"][char] += 1
+        if char.isalpha():
+            if char.isupper():
+                if char not in data["characters_dic"]["letters"]["uppercase"]:
+                    data["characters_dic"]["letters"]["uppercase"][char] = 1
+                else:
+                    data["characters_dic"]["letters"]["uppercase"][char] += 1
+            elif char.islower():
+                if char not in data["characters_dic"]["letters"]["lowercase"]:
+                    data["characters_dic"]["letters"]["lowercase"][char] = 1
+                else:
+                    data["characters_dic"]["letters"]["lowercase"][char] += 1
+
         elif char in ".,!?;:-—()[]\"'":
             if char not in data["characters_dic"]["punctuation"]:
                 data["characters_dic"]["punctuation"][char] = 1
             else:
                 data["characters_dic"]["punctuation"][char] += 1
+
+        elif char == " ":
+            data["characters_dic"]["spaces"] += 1
+
+        elif char.isdigit():
+            data["characters_dic"]["digits"] += 1
+
     return data
 
 
@@ -81,14 +90,15 @@ def analyze_sentence(sentence, data):
 def process_file(text):
 
     #=============================== Initialize global counters and storage ==============================================
-
     data = {
         "sentence_lengths": [],
         "shortest_sentence": None,
         "longest_sentence": None,
         "characters_dic": {
             "letters": {"uppercase": {}, "lowercase": {}},
-            "punctuation": {}
+            "punctuation": {},
+            "spaces" : 0,
+            "digits" : 0
         },
         "words_dic_all": {
             "words_dic": {},

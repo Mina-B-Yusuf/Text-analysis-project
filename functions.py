@@ -23,26 +23,30 @@ def basic_statistics(data):
     num_punct = sum(data["characters_dic"]["punctuation"].values())
     total_characters = num_upper + num_lower + num_punct
 
-    #---------------------- average words per sentence ----------------------
-    average_words_per_sentence = round(sum(data["words_dic_all"]["words_per_lines_list"]) / data["number_of_lines"], 2)
+    #---------------------- sentences and averages ----------------------
+    number_of_sentences = len(data["sentence_lengths"])
 
-    #---------------------- average characters per word ----------------------
-    average_characters_per_word = round(total_characters / number_of_words, 2)
+    # average words per sentence
+    if len(data["sentence_lengths"]) > 0:
+        average_words_per_sentence = round(sum(data["sentence_lengths"]) / len(data["sentence_lengths"]), 2)
+    else:
+        average_words_per_sentence = 0
 
-    return number_of_words, total_characters, average_words_per_sentence, average_characters_per_word
+    # average characters per word
+    if len(data["words_dic_all"]["word_lengths"]) > 0:
+        average_characters_per_word = round(sum(data["words_dic_all"]["word_lengths"]) / len(data["words_dic_all"]["word_lengths"]), 2)
+    else:
+        average_characters_per_word = 0
 
+    #---------------------- display ----------------------
+    print("---- Basic Statistics ----")
+    print("Number of sentences:", number_of_sentences)
+    print("Number of words:", number_of_words)
+    print("Number of characters:", total_characters)
+    print("Average words per sentence:", average_words_per_sentence)
+    print("Average characters per word:", average_characters_per_word)
 
-number_of_words, total_characters, average_words_per_sentence, average_characters_per_word = basic_statistics(data)
-
-
-#---------------------- display ----------------------
-print("---- Basic Statistics ----")
-print("Number of sentences: ", data["number_of_lines"])
-print("Number of words: ", number_of_words)
-print("Number of characters: ", total_characters)
-print("Average words per sentence: ", average_words_per_sentence)
-print("Average characters per word: ", average_characters_per_word)
-
+    return
 
 
 #========================================================================================================================
@@ -102,9 +106,61 @@ def word_analysis(data):
     print("Words appearing only once:", words_appearing_once_count)
 
 #========================================================================================================================
-# Sentence ANALYSIS
+# SENTENCE ANALYSIS
+#========================================================================================================================
+def sentence_analysis(data):
+
+    #---------------------- sentence counts and lengths ----------------------
+    number_of_sentences = len(data["sentence_lengths"])
+
+    if number_of_sentences > 0:
+        average_word_per_sentence = round((sum(data["sentence_lengths"]) / number_of_sentences), 2)
+    else:
+        average_word_per_sentence = 0
+
+    #---------------------- shortest and longest sentence ----------------------
+    shortest_sentence_text = data["shortest_sentence"]
+    longest_sentence_text = data["longest_sentence"]
+
+    shortest_sentence_length = len(shortest_sentence_text.split())
+    longest_sentence_length = len(longest_sentence_text.split())
+
+    #---------------------- sentence length distribution ----------------------
+    sentence_lengths = data["sentence_lengths"]
+    length_counts = {}
+
+    for length in sentence_lengths:
+        if length not in length_counts:
+            length_counts[length] = 1
+        else:
+            length_counts[length] += 1
+
+    pairs = list(length_counts.items())
+    items = [[count, length] for (length, count) in pairs]
+    items.sort(reverse=True)
+
+    #---------------------- display ----------------------
+    print('--- Sentence Analysis for "sample.txt" ---')
+    print("Total sentences:", number_of_sentences)
+    print("Average words per sentence:", average_word_per_sentence)
+    print("Shortest sentence:", shortest_sentence_length, "words")
+    print("Longest sentence:", longest_sentence_length, "words")
+    print("Shortest sentence text:", shortest_sentence_text)
+    print("Longest sentence text:", longest_sentence_text[0:100], "...")
+
+    print("Sentence length distribution (top 5):")
+    count = 0
+    for pair in items:
+        freq = pair[0]
+        length = pair[1]
+        print("", length, "words:", freq, "sentences")
+        count = count + 1
+        if count == 5:
+            break
+
+    return
+
+#========================================================================================================================
+# CHARACTER ANALYSIS
 #========================================================================================================================
 
-def sentence_analysis(data):
-    number_of_sentences = len(data["sentence_lengths"])
-    average_word_per_sentence = round((sum(data["sentence_lengths"]) / len(data["sentence_lengths"])), 2)

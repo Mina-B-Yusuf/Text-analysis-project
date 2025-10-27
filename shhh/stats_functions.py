@@ -29,19 +29,15 @@ def basic_statistics(data):
     #---------------------- average characters per word ----------------------
     average_characters_per_word = round(total_characters / number_of_words, 2)
 
-    return number_of_words, total_characters, average_words_per_sentence, average_characters_per_word
 
 
-number_of_words, total_characters, average_words_per_sentence, average_characters_per_word = basic_statistics(data)
-
-
-#---------------------- display ----------------------
-print("---- Basic Statistics ----")
-print("Number of sentences: ", len(data["sentence_lengths"]))
-print("Number of words: ", number_of_words)
-print("Number of characters: ", total_characters)
-print("Average words per sentence: ", average_words_per_sentence)
-print("Average characters per word: ", average_characters_per_word)
+    #---------------------- display ----------------------
+    print("---- Basic Statistics ----")
+    print("Number of sentences: ", len(data["sentence_lengths"]))
+    print("Number of words: ", number_of_words)
+    print("Number of characters: ", total_characters)
+    print("Average words per sentence: ", average_words_per_sentence)
+    print("Average characters per word: ", average_characters_per_word)
 
 
 

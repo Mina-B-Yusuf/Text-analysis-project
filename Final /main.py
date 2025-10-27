@@ -2,7 +2,7 @@ from stats_functions import load_data, basic_statistics, word_analysis, sentence
 from visuals import basic_statistics_visuals, word_analysis_visuals, sentence_analysis_visuals, character_analysis_visuals
 
 from file_processing import run_processing_from_main
-
+import os
 
 def main():
     data = load_data()
@@ -19,8 +19,10 @@ def main():
         if choice == 1 : # load text file
             print("Available text files:")
             files = [f for f in os.listdir("texts") if f.endswith(".txt")]
-            for i, file in enumerate(files):
-                print(f"{i + 1}. {file}")
+            i = 1
+            for file in files:
+                print(f"{i}. {file}")
+                i += 1
 
             file_choice = int(input("Choose a file number: ")) - 1
 
@@ -40,6 +42,7 @@ def main():
             print('''
                 1. Visuals for Basics Statistics
                 2. Back to menu''')
+            
             choice = int(input('Enter your choice: '))
             if choice == 1:
                 basic_statistics_visuals(data)

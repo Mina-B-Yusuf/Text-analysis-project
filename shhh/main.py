@@ -1,4 +1,6 @@
-from stats_functions import basic_statistics, word_analysis, sentence_analysis, character_analysis, data
+from stats_functions import load_data, basic_statistics, word_analysis, sentence_analysis, character_analysis
+
+data = load_data()
 
 while True: #keep looping forever — until I manually tell it to stop
     print ('''--- Menu ---

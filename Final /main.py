@@ -16,14 +16,19 @@ def main():
         choice = int(input('Enter your choice: '))
 
         if choice == 1 : # load text file
-            print('''
-                1. Crime and punishment
-                2. 
-                3. 
-                4. 
-                ''')
-            choice = int(input('Enter your choice: '))
-
+            print("Available text files:")
+            files = [f for f in os.listdir("texts") if f.endswith(".txt")]
+            for i, filename in enumerate(files):
+                print(f"{i + 1}. {filename}")
+            
+            file_choice = int(input("Choose a file number: ")) - 1
+            if 0 <= file_choice < len(files):
+                filename = os.path.join("texts", files[file_choice])
+                print(f"Processing {filename}...")
+                subprocess.run(["python", "file_processing.py", filename])
+                data = load_data()  # Reload the processed data
+            else:
+                print("Invalid choice.")
 
 
         elif choice == 2: # display basic statistics

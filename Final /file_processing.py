@@ -145,12 +145,14 @@ def process_file(text):
 #========================================================================================================================
 # SAVING PROCESSED DATA
 #========================================================================================================================
-with open("sample.txt", "r", encoding="utf-8") as f:
-    text = f.readlines()
 
-processed_text_data = process_file(text)
+def run_processing(filename):
+    with open(filename, "r", encoding="utf-8") as f:
+        text = f.readlines()
 
-with open("processed_data.json", "w", encoding="utf-8") as json_file:
-    json.dump(processed_text_data, json_file, indent=4, ensure_ascii=False)
+    processed_text_data = process_file(text)
 
-print("Processing complete. Results saved to processed_data.json")
+    with open("processed_data.json", "w", encoding="utf-8") as json_file:
+        json.dump(processed_text_data, json_file, indent=4, ensure_ascii=False)
+
+    print(f"Processing complete. Results saved to processed_data.json from {filename}")

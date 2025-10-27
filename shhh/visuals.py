@@ -58,78 +58,72 @@ def basic_statistics_visuals(data):
 # WORD ANALYSIS
 #========================================================================================================================
 
-def word_analysis(data):
+import matplotlib.pyplot as plt
+
+def word_analysis_visuals(data):
 
     #---------------------- getting data ----------------------------------------------
     word_dic = data["words_dic_all"]["words_dic"]
     word_lengths = data["words_dic_all"]["word_lengths"]
 
-    #---------------------- sorting according to their frequency ----------------------
+    #======================================== visualization ============================================
+
+    #---------------------- word length statistics --------------------------------
+    length_count_dic = {}
+    for length in word_lengths:
+        if length not in length_count_dic:
+            length_count_dic[length] = 1
+        else:
+            length_count_dic[length] += 1
+
+    pairs_1 = list(length_count_dic.items())
+    items_1 = [[count, length] for (length, count) in pairs_1]
+    items_1.sort(reverse=True)
+
+    length_visual_dic = {}
+    for pair in items_1[:10]:
+        frequency = pair[0]
+        length = pair[1]
+        length_visual_dic[length] = frequency
+
+    plt.figure(figsize=(9, 6))
+    plt.bar(length_visual_dic.keys(), length_visual_dic.values(), color='skyblue', edgecolor='black')
+    plt.xticks(rotation=45, fontsize=12)
+    plt.yticks(fontsize=12)
+    plt.title("Word length distribution (Top 10)", fontsize=14, fontweight='bold')
+    plt.tight_layout()
+    plt.show()
+
+    #---------------------- Top 10 word statistics --------------------------------
     pairs = list(word_dic.items())
     items = [[count, word] for (word, count) in pairs]
     items.sort(reverse=True)
 
-    total_words = sum(word_dic.values())
-
-    #---------------------- word length statistics --------------------------------
-    if len(word_lengths) > 0:
-        shortest_word_length = min(word_lengths)
-        longest_word_length = max(word_lengths)
-        average_word_length = round(sum(word_lengths) / len(word_lengths), 1)
-    else:
-        shortest_word_length = 0
-        longest_word_length = 0
-        average_word_length = 0
-
-    #---------------------- unique words ----------------------
-    unique_word_count = len(word_dic)
-
-    #---------------------- words appearing once ----------------------
-    words_appearing_once = []
-    for word in word_dic:
-        if word_dic[word] == 1:
-            words_appearing_once.append(word)
-
-    words_appearing_once_count = len(words_appearing_once)
-
-    #---------------------- display ----------------------
-    print('--- Word Analysis for "sample.txt" ---')
-    print("Top 10 most common words:")
-
-    count = 1
+    word_visual_dic = {}
     for pair in items[:10]:
-        count = pair[0]
+        frequency = pair[0]
         word = pair[1]
-        percentage = round((count / total_words) * 100, 1)
-        print("", count, ".", word, count, "times (", str(percentage) + "%)", sep=" ")
-        count = count + 1
+        word_visual_dic[word] = frequency
 
-    print("Word length statistics:")
-    print(" Shortest word:", shortest_word_length, "characters")
-    print(" Longest word:", longest_word_length, "characters")
-    print(" Average word length:", average_word_length, "characters")
-    print("Unique words:", unique_word_count)
-    print("Words appearing only once:", words_appearing_once_count)
+    plt.figure(figsize=(9, 6))
+    plt.bar(word_visual_dic.keys(), word_visual_dic.values(), color='skyblue', edgecolor='black')
+    plt.xticks(rotation=45, fontsize=12)
+    plt.yticks(fontsize=12)
+    plt.title("Top 10 Most Common Words", fontsize=14, fontweight='bold')
+    plt.tight_layout()
+    plt.show()
+
+    
+
+
+
 
 #========================================================================================================================
 # SENTENCE ANALYSIS
 #========================================================================================================================
-def sentence_analysis(data):
+import matplotlib.pyplot as plt
 
-    #---------------------- sentence counts and lengths ----------------------
-    number_of_sentences = len(data["sentence_lengths"])
-
-    if number_of_sentences > 0:
-        average_word_per_sentence = round((sum(data["sentence_lengths"]) / number_of_sentences), 2)
-    else:
-        average_word_per_sentence = 0
-
-    #---------------------- shortest and longest sentence ----------------------
-    shortest_sentence_text = data["shortest_sentence"]
-    longest_sentence_text = data["longest_sentence"]
-
-    shortest_sentence_length = len(shortest_sentence_text.split())
-    longest_sentence_length = len(longest_sentence_text.split())
+def sentence_analysis_visuals(data):
 
     #---------------------- sentence length distribution ----------------------
     sentence_lengths = data["sentence_lengths"]
@@ -145,31 +139,33 @@ def sentence_analysis(data):
     items = [[count, length] for (length, count) in pairs]
     items.sort(reverse=True)
 
-    #---------------------- display ----------------------
-    print('--- Sentence Analysis for "sample.txt" ---')
-    print("Total sentences:", number_of_sentences)
-    print("Average words per sentence:", average_word_per_sentence)
-    print("Shortest sentence:", shortest_sentence_length, "words")
-    print("Longest sentence:", longest_sentence_length, "words")
-    print("Shortest sentence text:", shortest_sentence_text)
-    print("Longest sentence text:", longest_sentence_text[0:100], "...")
-
-    print("Sentence length distribution (top 5):")
-    count = 0
+    sentence_lengths_visualisation = {}
+    shown = 0
     for pair in items:
         freq = pair[0]
         length = pair[1]
-        print("", length, "words:", freq, "sentences")
-        count = count + 1
-        if count == 5:
+        sentence_lengths_visualisation[length] = freq
+        shown += 1
+        if shown == 5:    # only keep top 5 like in your project description
             break
 
-    return
+    #======================================== visualization ============================================
+
+    plt.figure(figsize=(9, 6))
+    plt.bar(sentence_lengths_visualisation.keys(), sentence_lengths_visualisation.values(), color='skyblue', edgecolor='black')
+    plt.xticks(rotation=45, fontsize=12)
+    plt.yticks(fontsize=12)
+    plt.title("Sentence length distribution (Top 5)", fontsize=14, fontweight='bold')
+    plt.tight_layout()
+    plt.show()
+
+    
 
 #========================================================================================================================
 # CHARACTER ANALYSIS
 #========================================================================================================================
-def character_analysis(data):
+def character_analysis_visuals(data):
+    #---------------------- merge uppercase and lowercase ----------------------
     letters_upper = data["characters_dic"]["letters"]["uppercase"]
     letters_lower = data["characters_dic"]["letters"]["lowercase"]
 
@@ -184,24 +180,42 @@ def character_analysis(data):
     items = [[freq, letter] for (letter, freq) in pairs]
     items.sort(reverse=True)
 
-    letters_count = sum(letters_lower.values())
-    digits = data["characters_dic"]["digits"]
-    spaces = data["characters_dic"]["spaces"]
-    punctuation = sum(data["characters_dic"]["punctuation"].values())
-    total_characters = letters_count + digits + spaces + punctuation
-
-    print("Character type distribution:")
-    print(" Letters:", letters_count, "(", round((letters_count / total_characters) * 100, 1), "%)")
-    print(" Digits:", digits, "(", round((digits / total_characters) * 100, 1), "%)")
-    print(" Spaces:", spaces, "(", round((spaces / total_characters) * 100, 1), "%)")
-    print(" Punctuation:", punctuation, "(", round((punctuation / total_characters) * 100, 1), "%)")
-
-    print("Most common letters:")
-    rank = 1
+    characters_visuals_dic = {}
     for pair in items[:10]:
         freq = pair[0]
         letter = pair[1]
-        percentage = round((freq / letters_count) * 100, 1)
-        print("", rank, ".", '"'+letter+'"', "-", freq, "times (", str(percentage) + "%)", sep=" ")
-        rank = rank + 1
+        characters_visuals_dic[letter] = freq
 
+    #---------------------- character type distribution ----------------------
+   # letters_count = sum(letters_lower.values())
+    #digits = data["characters_dic"]["digits"]
+    #spaces = data["characters_dic"]["spaces"]
+    #punctuation = sum(data["characters_dic"]["punctuation"].values())
+    #total_characters = letters_count + digits + spaces + punctuation
+
+    #type_distribution = {
+       #"Letters": letters_count,
+        #"Digits": digits,
+        #"Spaces": spaces,
+        #"Punctuation": punctuation}
+
+    #======================================== visualization ============================================
+
+    # --- Character type distribution ---
+    #plt.figure(figsize=(8, 6))
+    #plt.bar(type_distribution.keys(), type_distribution.values(), color='lightcoral', edgecolor='black')
+    #plt.title("Character Type Distribution", fontsize=14, fontweight='bold')
+    #plt.xticks(rotation=30, fontsize=12)
+    #plt.yticks(fontsize=12)
+    #plt.tight_layout()
+   # plt.show()
+
+    # --- Top 10 most common letters ---
+    plt.figure(figsize=(9, 6))
+    plt.bar(characters_visuals_dic.keys(), characters_visuals_dic.values(), color='skyblue', edgecolor='black')
+    plt.xticks(rotation=45, fontsize=12)
+    plt.yticks(fontsize=12)
+    plt.title("Top 10 Most Common Letters", fontsize=14, fontweight='bold')
+    plt.tight_layout()
+    plt.show()
+ 

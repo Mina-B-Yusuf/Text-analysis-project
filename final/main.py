@@ -89,7 +89,6 @@ def main():
         elif choice == 6:
             print (6)   # export resultat
 
-
         else: 
             break      #break the loop
             print (7)   # exit

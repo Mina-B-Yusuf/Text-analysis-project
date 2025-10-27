@@ -118,8 +118,7 @@ def process_file(text):
         "vs.", "etc.", "u.s.", "e.g.", "i.e."
     ]
 
-    # Words to skip if they appear as a full sentence
-    JUNK_WORDS = ["alcott", "chapter", "illustration", "contents"]
+
 
     sentence_from_prev_line = ""
 
@@ -174,10 +173,6 @@ def process_file(text):
                             i += 1
                             continue
 
-                        if sentence_candidate.strip('.').lower() in JUNK_WORDS:
-                            start_i = i + 1
-                            i += 1
-                            continue
                         # ---------------------------------------------------
 
                         # ✅ All checks passed — analyze this sentence

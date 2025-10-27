@@ -160,6 +160,7 @@ def process_file(text):
                         if len(words) >= 2 and all(len(w) == 2 and w[1] == '.' for w in words[-2:]):
                             i += 1
                             continue
+                        
 
                         # All checks passed — treat as end of sentence
                         sentence = line[start_i:i+1].strip()

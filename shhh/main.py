@@ -8,7 +8,7 @@ while True: #keep looping forever — until I manually tell it to stop
     5. character analysis
     6. export resultat
     7. exit''')
-    choice = int(input('enter your choice: '))
+    choice = int(input('Enter your choice: '))
 
     if choice == 1 : # load text file
         print (1) 
@@ -16,6 +16,11 @@ while True: #keep looping forever — until I manually tell it to stop
         print("--------- Basic Statistics---------")
         basic_statistics(data)
         print()
+        print('''
+              1. Visuals for Basics Statistics
+              2. Back to menu''')
+        choice = int(input('Enter your choice: '))
+        if choice == 1
 
     elif choice == 3: # word frequency analysis
         print ("--------- Word Analysis ---------")

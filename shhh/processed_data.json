@@ -1,0 +1,93 @@
+{
+    "sentence_lengths": [
+        8,
+        6,
+        6
+    ],
+    "shortest_sentence": "The flower was yellow and bright.",
+    "longest_sentence": "Once upon a time there was a flower.",
+    "characters_dic": {
+        "letters": {
+            "uppercase": {
+                "O": 1,
+                "T": 1,
+                "I": 1
+            },
+            "lowercase": {
+                "n": 3,
+                "c": 2,
+                "e": 12,
+                "u": 1,
+                "p": 1,
+                "o": 4,
+                "a": 7,
+                "t": 4,
+                "i": 4,
+                "m": 2,
+                "h": 3,
+                "r": 7,
+                "w": 6,
+                "s": 3,
+                "f": 2,
+                "l": 5,
+                "y": 1,
+                "d": 2,
+                "b": 2,
+                "g": 2,
+                "v": 1
+            }
+        },
+        "punctuation": {
+            ".": 3
+        },
+        "spaces": 17,
+        "digits": 0
+    },
+    "words_dic_all": {
+        "words_dic": {
+            "once": 1,
+            "upon": 1,
+            "a": 3,
+            "time": 1,
+            "there": 1,
+            "was": 2,
+            "flower": 2,
+            "the": 1,
+            "yellow": 1,
+            "and": 1,
+            "bright": 1,
+            "it": 1,
+            "grew": 1,
+            "beside": 1,
+            "calm": 1,
+            "river": 1
+        },
+        "word_lengths": [
+            4,
+            4,
+            1,
+            4,
+            5,
+            3,
+            1,
+            6,
+            3,
+            6,
+            3,
+            6,
+            3,
+            6,
+            2,
+            4,
+            6,
+            1,
+            4,
+            5
+        ],
+        "words_per_lines_list": [
+            8,
+            6,
+            6
+        ]
+    }
+}

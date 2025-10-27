@@ -1,11 +1,16 @@
 import json
+import numpy as np
+import matplotlib.pyplot as plt
+
 
 #========================================================================================================================
 # LOAD DATA
 #========================================================================================================================
 
-with open("processed_data.json", "r", encoding="utf-8") as file:
-    data = json.load(file)
+def load_data():
+    with open("processed_data.json", "r", encoding="utf-8") as file:
+        data = json.load(file)
+    return data
 
 
 #========================================================================================================================
@@ -29,10 +34,21 @@ def basic_statistics_visuals(data):
     #---------------------- average characters per word ----------------------
     average_characters_per_word = round(total_characters / number_of_words, 2)
 
+    basic_statistics_dic = {
+        "Sentences": len(data["sentence_lengths"]),
+        "unique words": data["words_dic_all"]["words_dic"]
+    }
 
 
     #---------------------- display ----------------------
     print("---- Basic Statistics ----")
+    plt.figure(9, 6)
+    plt.bar( x =  basic_statistics_dic
+            )
+    plt.xticks(rotation = 45, fontsize = 13)
+    plt.ysticks(fontsize = 13)
+    plt.title("---- Basic Statistics ----")
+
 
     
 

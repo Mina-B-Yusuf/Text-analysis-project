@@ -30,7 +30,6 @@ def basic_statistics(data):
     average_characters_per_word = round(total_characters / number_of_words, 2)
 
 
-
     #---------------------- display ----------------------
     print("---- Basic Statistics ----")
     print("Number of sentences: ", len(data["sentence_lengths"]))
@@ -68,35 +67,32 @@ def word_analysis(data):
         longest_word_length = 0
         average_word_length = 0
 
-    #---------------------- unique words ----------------------
+    #---------------------- unique words and words appearing once ----------------------
     unique_word_count = len(word_dic)
 
-    #---------------------- words appearing once ----------------------
-    words_appearing_once = []
+    words_appearing_once = 0
     for word in word_dic:
         if word_dic[word] == 1:
-            words_appearing_once.append(word)
-
-    words_appearing_once_count = len(words_appearing_once)
+            words_appearing_once += 1
 
     #---------------------- display ----------------------
     print('--- Word Analysis for "sample.txt" ---')
     print("Top 10 most common words:")
 
-    count = 1
+    rank = 1
     for pair in items[:10]:
-        count = pair[0]
+        frequency = pair[0]
         word = pair[1]
-        percentage = round((count / total_words) * 100, 1)
-        print("", count, ".", word, count, "times (", str(percentage) + "%)", sep=" ")
-        count = count + 1
+        percentage = round((frequency / total_words) * 100, 1)
+        print("", rank, ".", word, "-", frequency, "times (", str(percentage) + "%)", sep=" ")
+        rank = rank + 1
 
     print("Word length statistics:")
     print(" Shortest word:", shortest_word_length, "characters")
     print(" Longest word:", longest_word_length, "characters")
     print(" Average word length:", average_word_length, "characters")
     print("Unique words:", unique_word_count)
-    print("Words appearing only once:", words_appearing_once_count)
+    print("Words appearing only once:", words_appearing_once)
 
 #========================================================================================================================
 # SENTENCE ANALYSIS

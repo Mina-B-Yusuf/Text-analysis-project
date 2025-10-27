@@ -9,7 +9,7 @@ def main():
     while True: #keep looping forever — until I manually tell it to stop
         print ('''--- Menu ---
         1. Load text file
-        2. display basic statistics
+        2. Basic statistics
         3. word frequency analysis
         4. Sentence analysis
         5. character analysis

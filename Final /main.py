@@ -1,73 +1,88 @@
 from stats_functions import load_data, basic_statistics, word_analysis, sentence_analysis, character_analysis
 from visuals import basic_statistics_visuals, word_analysis_visuals, sentence_analysis_visuals, character_analysis_visuals
-data = load_data()
 
-while True: #keep looping forever — until I manually tell it to stop
-    print ('''--- Menu ---
-    1. Load text file
-    2. display basic statistics
-    3. word frequency analysis
-    5. character analysis
-    6. export resultat
-    7. exit''')
-    choice = int(input('Enter your choice: '))
 
-    if choice == 1 : # load text file
-        print(
-    elif choice == 2: # display basic statistics
-        print("--------- Basic Statistics---------")
-        basic_statistics(data)
-        print()
-        print('''
-              1. Visuals for Basics Statistics
-              2. Back to menu''')
+
+def main():
+    data = load_data()
+    while True: #keep looping forever — until I manually tell it to stop
+        print ('''--- Menu ---
+        1. Load text file
+        2. display basic statistics
+        3. word frequency analysis
+        5. character analysis
+        6. export resultat
+        7. exit''')
         choice = int(input('Enter your choice: '))
-        if choice == 1:
-            basic_statistics_visuals(data)
-        continue 
+
+        if choice == 1 : # load text file
+            print('''
+                1. Crime and punishment
+                2. 
+                3. 
+                4. 
+                ''')
+            choice = int(input('Enter your choice: '))
 
 
 
-    elif choice == 3: # word frequency analysis
-        print ("--------- Word Analysis ---------")
-        word_analysis(data)
-        print('''
-              1. Visuals for Word Analysis
-              2. Back to menu''')
-        choice = int(input('Enter your choice: '))
-        if choice == 1:
-            word_analysis_visuals(data)
-        continue
-
-    elif choice == 4:
-        print ("--------- Sentence Analysis ---------")
-        sentence_analysis(data)
-        print()
-        print('''
-              1. Visuals for Sentence analysis
-              2. Back to menu''')
-        choice = int(input('Enter your choice: '))
-        if choice == 1:
-            sentence_analysis_visuals(data)
-        continue 
-
-    elif choice == 5:
-        print ("--------- Character Analysis ---------")
-        character_analysis(data)
-        print()
-        print('''
-              1. Visuals for character analysis
-              2. Back to menu''')
-        choice = int(input('Enter your choice: '))
-        if choice == 1:
-            character_analysis_visuals(data)
-        continue
-
-    elif choice == 6:
-        print (6)   # export resultat
+        elif choice == 2: # display basic statistics
+            print("--------- Basic Statistics---------")
+            basic_statistics(data)
+            print()
+            print('''
+                1. Visuals for Basics Statistics
+                2. Back to menu''')
+            choice = int(input('Enter your choice: '))
+            if choice == 1:
+                basic_statistics_visuals(data)
+            continue 
 
 
-    else: 
-        break      #break the loop
-        print (7)   # exit
-    print('press enter to continue...')
+
+        elif choice == 3: # word frequency analysis
+            print ("--------- Word Analysis ---------")
+            word_analysis(data)
+            print('''
+                1. Visuals for Word Analysis
+                2. Back to menu''')
+            choice = int(input('Enter your choice: '))
+            if choice == 1:
+                word_analysis_visuals(data)
+            continue
+
+        elif choice == 4:
+            print ("--------- Sentence Analysis ---------")
+            sentence_analysis(data)
+            print()
+            print('''
+                1. Visuals for Sentence analysis
+                2. Back to menu''')
+            choice = int(input('Enter your choice: '))
+            if choice == 1:
+                sentence_analysis_visuals(data)
+            continue 
+
+        elif choice == 5:
+            print ("--------- Character Analysis ---------")
+            character_analysis(data)
+            print()
+            print('''
+                1. Visuals for character analysis
+                2. Back to menu''')
+            choice = int(input('Enter your choice: '))
+            if choice == 1:
+                character_analysis_visuals(data)
+            continue
+
+        elif choice == 6:
+            print (6)   # export resultat
+
+
+        else: 
+            break      #break the loop
+            print (7)   # exit
+        print('press enter to continue...')
+
+if __name__ == "__main__":
+    main()

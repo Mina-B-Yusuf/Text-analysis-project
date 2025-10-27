@@ -5,7 +5,6 @@ while True: #keep looping forever — until I manually tell it to stop
     1. Load text file
     2. display basic statistics
     3. word frequency analysis
-    4. sentence analysis
     5. character analysis
     6. export resultat
     7. exit''')

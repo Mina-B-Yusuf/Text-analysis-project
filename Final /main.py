@@ -1,6 +1,9 @@
 from stats_functions import load_data, basic_statistics, word_analysis, sentence_analysis, character_analysis
 from visuals import basic_statistics_visuals, word_analysis_visuals, sentence_analysis_visuals, character_analysis_visuals
 
+from file_processing import run_processing_from_main
+
+run_processing_from_main(filename)
 
 
 def main():
@@ -31,7 +34,7 @@ def main():
                 print("Invalid choice.")
 
 
-        elif choice == 2: # display basic statistics
+        elif choice == 2 and data: # display basic statistics
             print("--------- Basic Statistics---------")
             basic_statistics(data)
             print()

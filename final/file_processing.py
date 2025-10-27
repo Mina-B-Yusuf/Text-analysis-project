@@ -90,9 +90,12 @@ def analyze_sentence(sentence, data):
 # FILE PROCESSING FUNCTION
 #========================================================================================================================
 
+
+
 def process_file(text):
 
     #=============================== Initialize global counters and storage ==============================================
+
     data = {
         "sentence_lengths": [],
         "shortest_sentence": None,
@@ -100,8 +103,8 @@ def process_file(text):
         "characters_dic": {
             "letters": {"uppercase": {}, "lowercase": {}},
             "punctuation": {},
-            "spaces" : 0,
-            "digits" : 0
+            "spaces": 0,
+            "digits": 0
         },
         "words_dic_all": {
             "words_dic": {},
@@ -110,8 +113,11 @@ def process_file(text):
         }
     }
 
+    # List of known abbreviations (lowercase)
+    ABBREVIATIONS = ["mr.", "mrs.", "dr.", "ms.", "prof.", "sr.", "jr.", "st.", "vs.", "etc.", "u.s.", "e.g.", "i.e."]
 
-    #=============================== MAIN LOOP — Read each line and detect sentences ==============================================
+
+ #=============================== MAIN LOOP — Read each line and detect sentences ==============================================
     sentence_from_prev_line = ""
 
     for line in text:
@@ -119,23 +125,54 @@ def process_file(text):
         if not line:
             continue
 
+        # Combine with any leftover from previous line
         if sentence_from_prev_line:
             line = sentence_from_prev_line + " " + line
             sentence_from_prev_line = ""
 
         start_i = 0
         i = 0
-
         while i < len(line):
+            # === Handle ellipses (skip splitting here) ===
+            if line[i:i+3] == "...":
+                i += 3
+                continue
+
+            # === Check if this is a sentence-ending punctuation ===
             if line[i] in ".!?":
-                sentence = line[start_i:i+1].strip()
-                start_i = i + 1
-                data = analyze_sentence(sentence, data)
+                # Check the character after punctuation
+                next_char_ok = (i + 1 == len(line)) or (line[i + 1] in ' "”’')
+
+                if next_char_ok:
+                    # Get the text up to this point
+                    sentence_candidate = line[start_i:i+1].strip()
+                    words = sentence_candidate.split()
+
+                    if words:
+                        last_word = words[-1].lower()
+
+                        # === Check if it's an abbreviation (e.g., "Mr.") ===
+                        if last_word in ABBREVIATIONS:
+                            i += 1
+                            continue
+
+                        # === Check for initials like "U. S." ===
+                        if len(words) >= 2 and all(len(w) == 2 and w[1] == '.' for w in words[-2:]):
+                            i += 1
+                            continue
+
+                        # All checks passed — treat as end of sentence
+                        sentence = line[start_i:i+1].strip()
+                        data = analyze_sentence(sentence, data)
+                        start_i = i + 1
+
             i += 1
 
+        # If there is text remaining after the last punctuation, save it for next line
         if start_i < len(line):
             sentence_from_prev_line = line[start_i:].strip()
 
+    # After all lines, if something is left, treat it as the final sentence
     if sentence_from_prev_line:
         data = analyze_sentence(sentence_from_prev_line, data)
 

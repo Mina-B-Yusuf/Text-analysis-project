@@ -13,7 +13,7 @@ def main():
         3. word frequency analysis
         4. Sentence analysis
         5. character analysis
-        6. export resultat
+        6. export resultatcd fina
         7. exit''')
         choice = int(input('Enter your choice: '))
 

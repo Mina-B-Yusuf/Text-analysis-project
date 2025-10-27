@@ -43,8 +43,7 @@ def basic_statistics_visuals(data):
     #---------------------- display ----------------------
     print("---- Basic Statistics ----")
     plt.figure(9, 6)
-    plt.bar( x =  basic_statistics_dic
-            )
+    plt.bar( x =  basic_statistics_dic )
     plt.xticks(rotation = 45, fontsize = 13)
     plt.ysticks(fontsize = 13)
     plt.title("---- Basic Statistics ----")

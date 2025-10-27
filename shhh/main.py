@@ -24,9 +24,7 @@ while True: #keep looping forever — until I manually tell it to stop
         choice = int(input('Enter your choice: '))
         if choice == 1:
             basic_statistics_visuals(data)
-
-        else:
-            break 
+        continue 
 
 
 
@@ -34,40 +32,36 @@ while True: #keep looping forever — until I manually tell it to stop
         print ("--------- Word Analysis ---------")
         word_analysis(data)
         print('''
-              1. Visuals for Basics Statistics
+              1. Visuals for Word Analysis
               2. Back to menu''')
         choice = int(input('Enter your choice: '))
         if choice == 1:
             word_analysis_visuals(data)
-            
-        else:
-            break 
+        continue
 
     elif choice == 4:
         print ("--------- Sentence Analysis ---------")
         sentence_analysis(data)
         print()
         print('''
-              1. Visuals for Basics Statistics
+              1. Visuals for Sentence analysis
               2. Back to menu''')
         choice = int(input('Enter your choice: '))
         if choice == 1:
             sentence_analysis_visuals(data)
-        else:
-            break 
+        continue 
 
     elif choice == 5:
         print ("--------- Character Analysis ---------")
         character_analysis(data)
         print()
         print('''
-              1. Visuals for Basics Statistics
+              1. Visuals for character analysis
               2. Back to menu''')
         choice = int(input('Enter your choice: '))
         if choice == 1:
             character_analysis_visuals(data)
-        else:
-            break 
+        continue
 
     elif choice == 6:
         print (6)   # export resultat

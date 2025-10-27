@@ -3,8 +3,6 @@ from visuals import basic_statistics_visuals, word_analysis_visuals, sentence_an
 
 from file_processing import run_processing_from_main
 
-run_processing_from_main(filename)
-
 
 def main():
     data = load_data()
@@ -21,15 +19,16 @@ def main():
         if choice == 1 : # load text file
             print("Available text files:")
             files = [f for f in os.listdir("texts") if f.endswith(".txt")]
-            for i, filename in enumerate(files):
-                print(f"{i + 1}. {filename}")
-            
+            for i, file in enumerate(files):
+                print(f"{i + 1}. {file}")
+
             file_choice = int(input("Choose a file number: ")) - 1
+
             if 0 <= file_choice < len(files):
                 filename = os.path.join("texts", files[file_choice])
                 print(f"Processing {filename}...")
-                subprocess.run(["python", "file_processing.py", filename])
-                data = load_data()  # Reload the processed data
+                run_processing_from_main(filename)  
+                data = load_data()  
             else:
                 print("Invalid choice.")
 

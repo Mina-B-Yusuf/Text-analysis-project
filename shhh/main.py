@@ -13,7 +13,7 @@ while True: #keep looping forever — until I manually tell it to stop
     choice = int(input('Enter your choice: '))
 
     if choice == 1 : # load text file
-        print (1) 
+        print(
     elif choice == 2: # display basic statistics
         print("--------- Basic Statistics---------")
         basic_statistics(data)

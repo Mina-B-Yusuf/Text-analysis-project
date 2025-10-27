@@ -42,18 +42,35 @@ def character_variables_function(sentence, data):
 def word_var_function(words, data):
     words_per_line = 0
     for word in words:
+        # Clean up punctuation and make lowercase
         word = word.lower().strip(".,!?;:-—()[]\"'")
         if not word:
             continue
+
+        # --- Skip numeric-only words (e.g., "2001", "50") ---
+        if word.isdigit():
+            continue
+
+        # --- Skip single-letter words (like "z") ---
+        # (You can remove this check if you want to keep "a" or "I")
+        if len(word) == 1 and word not in ("a", "i"):
+            continue
+
+        # --- Skip junk words that are mostly punctuation ---
+        if all(ch in ".,!?;:-—()[]\"'" for ch in word):
+            continue
+
+        # Count the word
         words_per_line += 1
         data["words_dic_all"]["word_lengths"].append(len(word))
         if word in data["words_dic_all"]["words_dic"]:
             data["words_dic_all"]["words_dic"][word] += 1
         else:
             data["words_dic_all"]["words_dic"][word] = 1
+
+    # Add total word count for the line
     data["words_dic_all"]["words_per_lines_list"].append(words_per_line)
     return data
-
 
 
 #=============================== SENTENCE VARIBALES ==============================================

@@ -116,6 +116,7 @@ def process_file(text):
         "sentence_lengths": [],
         "shortest_sentence": None,
         "longest_sentence": None,
+        "paragraph_count" : 0
         "characters_dic": {
             "letters": {"uppercase": {}, "lowercase": {}},
             "punctuation": {},
@@ -143,6 +144,9 @@ def process_file(text):
         line = line.strip()
         if not line:
             continue
+
+        if line == "":
+        data["paragraph_count"] += 1
 
         # Combine with leftover sentence from previous line
         if sentence_from_prev_line:

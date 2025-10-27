@@ -87,13 +87,13 @@ def word_analysis(data):
     print('--- Word Analysis for "sample.txt" ---')
     print("Top 10 most common words:")
 
-    rank = 1
+    count = 1
     for pair in items[:10]:
         count = pair[0]
         word = pair[1]
         percentage = round((count / total_words) * 100, 1)
-        print("", rank, ".", word, count, "times (", str(percentage) + "%)", sep=" ")
-        rank = rank + 1
+        print("", count, ".", word, count, "times (", str(percentage) + "%)", sep=" ")
+        count = count + 1
 
     print("Word length statistics:")
     print(" Shortest word:", shortest_word_length, "characters")
@@ -160,4 +160,39 @@ def sentence_analysis(data):
 #========================================================================================================================
 # CHARACTER ANALYSIS
 #========================================================================================================================
+def character_analysis(data):
+    letters_upper = data["characters_dic"]["letters"]["uppercase"]
+    letters_lower = data["characters_dic"]["letters"]["lowercase"]
+
+    for letter, freq in letters_upper.items():
+        letter_lower = letter.lower()
+        if letter_lower in letters_lower:
+            letters_lower[letter_lower] += freq
+        else:
+            letters_lower[letter_lower] = freq
+
+    pairs = list(letters_lower.items())
+    items = [[freq, letter] for (letter, freq) in pairs]
+    items.sort(reverse=True)
+
+    letters_count = sum(letters_lower.values())
+    digits = data["characters_dic"]["digits"]
+    spaces = data["characters_dic"]["spaces"]
+    punctuation = sum(data["characters_dic"]["punctuation"].values())
+    total_characters = letters_count + digits + spaces + punctuation
+
+    print("Character type distribution:")
+    print(" Letters:", letters_count, "(", round((letters_count / total_characters) * 100, 1), "%)")
+    print(" Digits:", digits, "(", round((digits / total_characters) * 100, 1), "%)")
+    print(" Spaces:", spaces, "(", round((spaces / total_characters) * 100, 1), "%)")
+    print(" Punctuation:", punctuation, "(", round((punctuation / total_characters) * 100, 1), "%)")
+
+    print("Most common letters:")
+    rank = 1
+    for pair in items[:10]:
+        freq = pair[0]
+        letter = pair[1]
+        percentage = round((freq / letters_count) * 100, 1)
+        print("", rank, ".", '"'+letter+'"', "-", freq, "times (", str(percentage) + "%)", sep=" ")
+        rank = rank + 1
 

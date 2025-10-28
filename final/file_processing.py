@@ -202,7 +202,7 @@ def process_file(text):
 
                         # ---------------------------------------------------
 
-                        # ✅ All checks passed — analyze this sentence
+                        # All checks passed — analyze this sentence
                         data = analyze_sentence(sentence_candidate, data)
                         start_i = i + 1
 

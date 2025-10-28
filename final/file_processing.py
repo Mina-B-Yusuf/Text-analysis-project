@@ -137,16 +137,17 @@ def process_file(text):
     ]
 
 
-    #=============================== Main loop  ==============================================
+    #============================================= Main loop  ==============================================
 
     sentence_from_prev_line = ""
 
     for line in text:
         line = line.strip()
+        
         if not line:
             continue
 
-        if line == "":
+        if line == "":  #for empty lines, = start of a paragraph or end of a paragraph
             data["paragraph_count"] += 1
 
         # Combine with leftover sentence from previous line

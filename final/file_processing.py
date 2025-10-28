@@ -91,9 +91,9 @@ def shortest_and_longest_sentence(sentence, data):
 # Filtering out invalid sententeces  
 #========================================================================================================================
 
-def is_valid_sentence(sentence, words, ABBREVIATIONS):
+def is_valid_sentence(sentence, words, abbreviations):
     """Returns True if this sentence should be analyzed."""
-    if len(words) < 2: #skipping sentences less than 2 characters, e.g. " a?"
+    if len(words) < 2: #skipping sentences less than 2 characters, e.g. "a?"
         return False
     if sentence.isupper(): #skipping sentences with all capital letters, e.g. "ALLCOT."
         return False
@@ -103,10 +103,10 @@ def is_valid_sentence(sentence, words, ABBREVIATIONS):
         return False
 
     last_word = words[-1].lower() 
-    if last_word in ABBREVIATIONS: # skipping dots used for abbreviations, e.g. "DR."
+    if last_word in abbreviations: # skipping dots used for abbreviations, e.g. "DR."
         return False
 
-    if len(words) >= 2 and all(len(w) == 2 and w[1] == '.' for w in words[-2:]):
+    if len(words) >= 2 and all(len(w) == 2 and w[1] == '.' for w in words[-2:]): #skipping character with only 2 character "U.", and where the second cahracter is a "." for two last characters of sentence, e.g. U.S.
         return False
 
     return True
@@ -154,8 +154,8 @@ def process_file(text):
         }
     }
 
-    # Known abbreviations (in lowercase)
-    ABBREVIATIONS = [
+    # possible abbreviations to skip 
+    abbreviations = [
         "mr.", "mrs.", "dr.", "ms.", "prof.", "sr.", "jr.", "st.",
         "vs.", "etc.", "u.s.", "e.g.", "i.e."
     ]
@@ -185,13 +185,13 @@ def process_file(text):
         start_i = 0
         i = 0
         while i < len(line):
-            # --- Handle ellipses (skip splitting here) ---
-            if line[i:i+3] == "...":
+    
+            if line[i:i+3] == "...": # skipping ellipses
                 i += 3
-                continue
+                continue 
 
-            # --- Check if this is a sentence-ending punctuation ---
-            if line[i] in ".!?":
+        
+            if line[i] in ".!?": # detecting sentence with punctuation
                 next_char_ok = (i + 1 == len(line)) or (line[i + 1] in ' "”’')
 
                 if next_char_ok:

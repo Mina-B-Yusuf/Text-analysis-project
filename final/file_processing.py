@@ -89,6 +89,31 @@ def shortest_and_longest_sentence(sentence, data):
 
 
 #========================================================================================================================
+# Filtering out invalid sententeces  
+#========================================================================================================================
+
+def is_valid_sentence(sentence, words, ABBREVIATIONS):
+    """Returns True if this sentence should be analyzed."""
+    if len(words) < 2: #if the sentence is less than characters, for example la. 
+        return False
+    if sentence.isupper(): #to take out words that  
+        return False
+    if sentence.strip() in ['"', '”', '“', "’", "‘"]: #to take senteces out the quotation marks 
+        return False
+    if sentence.strip().startswith(("“", '"')) and len(words) <= 2:
+        return False
+
+    last_word = words[-1].lower()
+    if last_word in ABBREVIATIONS:
+        return False
+
+    if len(words) >= 2 and all(len(w) == 2 and w[1] == '.' for w in words[-2:]):
+        return False
+
+    return True
+
+
+#========================================================================================================================
 # SHORT NAMES
 #========================================================================================================================
 

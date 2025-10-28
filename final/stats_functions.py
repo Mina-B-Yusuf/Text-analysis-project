@@ -135,7 +135,7 @@ def sentence_analysis(data):
     print(" Longest sentence: ", longest_sentence_length, "words")
     print(" Shortest sentence text: ", shortest_sentence_text)
     print(" Longest sentence text: ", longest_sentence_text[0:100], "...")
-    print(" Total number of Paragraphs: ", data[paragraph_count])
+    print(" Total number of Paragraphs: ", data["paragraph_count"])
 
     print(" Sentence length distribution (top 5): ")
     count = 0

@@ -179,7 +179,7 @@ def character_analysis(data):
     print(" Spaces: ", spaces, "(", round((spaces / total_characters) * 100, 1), "%)")
     print(" Punctuation: ", punctuation, "(", round((punctuation / total_characters) * 100, 1), "%)")
 
-    print("Most common letters:")
+    print(" Most common letters: ")
     rank = 1
     for pair in items[:10]:
         freq = pair[0]

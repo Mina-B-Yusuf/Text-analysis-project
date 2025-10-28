@@ -24,7 +24,7 @@ def basic_statistics(data):
     total_characters = num_upper + num_lower + num_punct
 
     #---------------------- average words per sentence ----------------------
-    average_words_per_sentence = round(sum(data["words_dic_all"]["words_per_lines_list"]) /len(data["sentence_lengths"]), 2)
+    average_words_per_sentence = round(sum(data["words_dic_all"]["words_per_sentence_list"]) /len(data["sentence_lengths"]), 2)
 
     #---------------------- average characters per word ----------------------
     average_characters_per_word = round(total_characters / number_of_words, 2)

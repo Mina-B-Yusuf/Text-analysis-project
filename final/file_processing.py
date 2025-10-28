@@ -69,7 +69,7 @@ def word_var_function(words, data):
             data["words_dic_all"]["words_dic"][word] = 1
 
     # Add total word count for the line
-    data["words_dic_all"]["words_per_lines_list"].append(words_per_line)
+    data["words_dic_all"]["words_per_sentence_list"].append(words_per_line)
     return data
 
 
@@ -126,7 +126,7 @@ def process_file(text):
         "words_dic_all": {
             "words_dic": {},
             "word_lengths": [],
-            "words_per_lines_list": []
+            "words_per_sentence_list": []
         }
     }
 
@@ -135,6 +135,8 @@ def process_file(text):
         "mr.", "mrs.", "dr.", "ms.", "prof.", "sr.", "jr.", "st.",
         "vs.", "etc.", "u.s.", "e.g.", "i.e."
     ]
+    previous_line_blank = False
+
 
 
     #============================================= Main loop  ==============================================
@@ -144,11 +146,13 @@ def process_file(text):
     for line in text:
         line = line.strip()
         
-        if not line:
-            continue
-
-        if line == "":  #for empty lines, = start of a paragraph or end of a paragraph
-            data["paragraph_count"] += 1
+        #counting parapgraphs 
+        if line == "":
+            if not previous_line_blank: #for empty lines, = start of a paragraph or end of a paragraph
+                data["paragraph_count"] += 1
+            previous_line_blank = True
+            continue 
+        previous_line_blank = False
 
         # Combine with leftover sentence from previous line
         if sentence_from_prev_line:

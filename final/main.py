@@ -7,7 +7,7 @@ import os
 def main():
     data = load_data()
     while True: #keep looping forever — until I manually tell it to stop
-        print ('''--- Menu ---
+        print ('''------ Menu -------
         1. Load text file
         2. Basic statistics
         3. word frequency analysis

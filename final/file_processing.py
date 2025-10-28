@@ -42,13 +42,12 @@ def character_variables_function(sentence, data):
 def word_var_function(words, data):
     words_per_line = 0
     for word in words:
-        # Clean up punctuation and make lowercase
-        word = word.lower().strip(".,!?;:-—()[]\"'")
+
+        word = word.lower().strip(".,!?;:-—()[]\"'") # lowering all letters and striping of quotation marks
         if not word:
             continue
 
-        # --- Skip numeric-only words (e.g., "2001", "50") ---
-        if word.isdigit():
+        if word.isdigit(): # Skip numeric-only words (e.g., "2001", "50") 
             continue
 
         # --- Skip single-letter words (like "z") ---
@@ -94,17 +93,17 @@ def shortest_and_longest_sentence(sentence, data):
 
 def is_valid_sentence(sentence, words, ABBREVIATIONS):
     """Returns True if this sentence should be analyzed."""
-    if len(words) < 2: #if the sentence is less than characters, for example la. 
+    if len(words) < 2: #skipping sentences less than 2 characters, e.g. " a?"
         return False
-    if sentence.isupper(): #to take out words that  
+    if sentence.isupper(): #skipping sentences with all capital letters, e.g. "ALLCOT."
         return False
-    if sentence.strip() in ['"', '”', '“', "’", "‘"]: #to take senteces out the quotation marks 
+    if sentence.strip() in ['"', '”', '“', "’", "‘"]: #skipping quoates  
         return False
-    if sentence.strip().startswith(("“", '"')) and len(words) <= 2:
+    if sentence.strip().startswith(("“", '"')) and len(words) <= 2: 
         return False
 
-    last_word = words[-1].lower()
-    if last_word in ABBREVIATIONS:
+    last_word = words[-1].lower() 
+    if last_word in ABBREVIATIONS: # skipping dots used for abbreviations, e.g. "DR."
         return False
 
     if len(words) >= 2 and all(len(w) == 2 and w[1] == '.' for w in words[-2:]):

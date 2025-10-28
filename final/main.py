@@ -38,6 +38,7 @@ def main():
 
         elif choice == 2 and data: # display basic statistics
             print("--------- Basic Statistics---------")
+            print(f"Processing {filename}...")
             basic_statistics(data)
             print()
             print('''
@@ -53,6 +54,7 @@ def main():
 
         elif choice == 3: # word frequency analysis
             print ("--------- Word Analysis ---------")
+            print(f"Processing {filename}...")
             word_analysis(data)
             print('''
                 1. Visuals for Word Analysis
@@ -64,6 +66,7 @@ def main():
 
         elif choice == 4:
             print ("--------- Sentence Analysis ---------")
+            print(f"Processing {filename}...")
             sentence_analysis(data)
             print()
             print('''
@@ -76,6 +79,7 @@ def main():
 
         elif choice == 5:
             print ("--------- Character Analysis ---------")
+            print(f"Processing {filename}...")
             character_analysis(data)
             print()
             print('''

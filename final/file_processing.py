@@ -161,12 +161,11 @@ def process_file(text):
         "vs.", "etc.", "u.s.", "e.g.", "i.e."
     ]
     previous_line_blank = False
-
+    sentence_from_prev_line = ""
 
 
     #============================================= Main loop  ==============================================
 
-    sentence_from_prev_line = ""
 
     for line in text:
         line = line.strip()
@@ -198,38 +197,12 @@ def process_file(text):
 
                 if next_char_ok:
                     # Get the sentence candidate
-                    sentence_candidate = line[start_i:i+1].strip()
-                    words = sentence_candidate.split()
+                    sentence = line[start_i:i+1].strip()
+                    words = sentence.split()
 
-                    if words:
-                        last_word = words[-1].lower()
-
-                        # Skip abbreviations like "Dr." or "Mr."
-                        if last_word in ABBREVIATIONS:
-                            i += 1
-                            continue
-
-                        # Skip initials like "U. S."
-                        if len(words) >= 2 and all(len(w) == 2 and w[1] == '.' for w in words[-2:]):
-                            i += 1
-                            continue
-
-                        # ---- Filter out junk or meaningless sentences ----
-                        if len(words) < 2:
-                            start_i = i + 1
-                            i += 1
-                            continue
-
-                        if sentence_candidate.isupper():
-                            start_i = i + 1
-                            i += 1
-                            continue
-
-                        # ---------------------------------------------------
-
-                        # All checks passed — analyze this sentence
-                        data = analyze_sentence(sentence_candidate, data)
-                        start_i = i + 1
+                    if is_valid_sentence(sentence, words, ABBREVIATIONS):
+                        data = analyze_sentence(sentence, data)
+                    start_i = i + 1
 
             i += 1
 

@@ -15,10 +15,12 @@ def main():
         2. Basic statistics
         3. word frequency analysis
         4. Sentence analysis
-        5. character analysis
-        6. export resultatcd fina
-        7. exit''')
-        choice = int(input('Enter your choice: '))
+        5. Character analysis
+        6. Export results
+        7. Exit''')
+        choice = int(input('''
+        Enter your choice: '''))
+        
         print ('''
         ==============================================''')
 
@@ -96,7 +98,7 @@ def main():
             continue
 
         elif choice == 6:
-            print (6)   # export resultat
+            print ('6')   # export resultat
 
         else: 
             break      #break the loop

@@ -7,7 +7,10 @@ import os
 def main():
     data = load_data()
     while True: #keep looping forever — until I manually tell it to stop
-        print ('''------ Menu -------
+        print ('''
+        ===============================================
+                    ------- Menu -------
+        ===============================================
         1. Load text file
         2. Basic statistics
         3. word frequency analysis
@@ -16,6 +19,8 @@ def main():
         6. export resultatcd fina
         7. exit''')
         choice = int(input('Enter your choice: '))
+        print ('''
+        ==============================================''')
 
         if choice == 1 : # load text file
             print("Available text files:")

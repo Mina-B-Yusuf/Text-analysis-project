@@ -4,6 +4,26 @@ from visuals import basic_statistics_visuals, word_analysis_visuals, sentence_an
 from file_processing import run_processing_from_main
 import os
 
+#========================================================================================================================
+# SAVING PROCESSED DATA
+#========================================================================================================================
+
+def saving_stats(data):
+    data = load_data(data)
+    basic_statistics(data)
+    word_analysis(data)
+    sentence_analysis(data)
+    character_analysis(data)
+    with open("processed_data.json", "w", encoding="utf-8") as json_file:
+        json.dump(processed_text_data, json_file, indent=4, ensure_ascii=False)
+
+    print(f"Processing complete. Results saved to processed_data.json from {filename}")
+
+
+#========================================================================================================================
+# Menu
+#========================================================================================================================
+
 def main():
     data = load_data()
     while True: #keep looping forever — until I manually tell it to stop
@@ -24,7 +44,7 @@ def main():
             print("Please enter an integer.")
             return False
             continue
-        
+
         
         print ('''
         ==============================================''')

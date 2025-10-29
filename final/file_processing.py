@@ -199,9 +199,9 @@ def process_file(text):
                     sentence = line[start_i:i+1].strip()
                     words = sentence.split()
 
-                    if is_valid_sentence(sentence, words, ABBREVIATIONS):
-                        data = analyze_sentence(sentence, data)
-                    start_i = i + 1
+                    if is_valid_sentence(sentence, words, abbreviations):
+                        data = analyze_sentence(sentence, data) #deriving needed data
+                    start_i = i + 1 #restarting starting index
 
             i += 1
 

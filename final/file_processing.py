@@ -176,8 +176,7 @@ def process_file(text):
             continue 
         previous_line_blank = False
 
-        # Combine with leftover sentence from previous line
-        if sentence_from_prev_line:
+        if sentence_from_prev_line: # Combine with leftover sentence from previous line
             line = sentence_from_prev_line + " " + line
             sentence_from_prev_line = ""
 
@@ -191,7 +190,7 @@ def process_file(text):
 
         
             if line[i] in ".!?": # detecting sentence with punctuation
-                next_char_ok = (i + 1 == len(line)) or (line[i + 1] in ' "”’')
+                next_char_ok = (i + 1 == len(line)) or (line[i + 1] in ' "”’') # to check if its end of line or if there is a e,g, - road." marking or a space
 
                 if next_char_ok: # Get the sentence
                     sentence = line[start_i:i+1].strip()
@@ -203,12 +202,11 @@ def process_file(text):
 
             i += 1
 
-        # If text remains after punctuation, carry it to next line
-        if start_i < len(line):
+        if start_i < len(line): # If text remains after punctuation, carry it to next line
             sentence_from_prev_line = line[start_i:].strip()
 
-    # If leftover sentence remains at end of file, process it
-    if sentence_from_prev_line:
+
+    if sentence_from_prev_line: # If leftover sentence remains at end of file, process it
         data = analyze_sentence(sentence_from_prev_line, data)
 
     return data

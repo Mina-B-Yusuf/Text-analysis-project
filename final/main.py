@@ -32,7 +32,11 @@ def main():
                 print(f"{i}. {file}")
                 i += 1
 
-            file_choice = int(input("Choose a file number: ")) - 1
+            try:
+                file_choice = int(input("Choose a file number: ")) - 1
+            except ValueError:
+                print("Please enter a valid integer.")
+                return False
 
             if 0 <= file_choice < len(files):
                 filename = os.path.join("texts", files[file_choice])

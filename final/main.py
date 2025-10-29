@@ -18,8 +18,11 @@ def main():
         5. Character analysis
         6. Export results
         7. Exit''')
-        choice = int(input('''
-        Enter your choice: '''))
+        try:
+            file_choice = int(input("Choose a file number: ")) - 1
+        except ValueError:
+            print("Please enter an integer.")
+            return False
         
         print ('''
         ==============================================''')
@@ -32,10 +35,9 @@ def main():
                 print(f"{i}. {file}")
                 i += 1
 
-            try:
-                file_choice = int(input("Choose a file number: ")) - 1
-            except ValueError:
-                print("Please enter a valid integer.")
+            file_choice = int(input("Choose a file number: ")) - 1
+            if not int(file_choice):
+                print()
                 return False
 
             if 0 <= file_choice < len(files):

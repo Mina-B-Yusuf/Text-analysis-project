@@ -91,8 +91,7 @@ def shortest_and_longest_sentence(sentence, data):
 # Filtering out invalid sententeces  
 #========================================================================================================================
 
-def is_valid_sentence(sentence, words, abbreviations):
-    """Returns True if this sentence should be analyzed."""
+def is_valid_sentence(sentence, words, abbreviations): #Returns True if this sentence should be analyzed.
     if len(words) < 2: #skipping sentences less than 2 characters, e.g. "a?"
         return False
     if sentence.isupper(): #skipping sentences with all capital letters, e.g. "ALLCOT."
@@ -169,7 +168,7 @@ def process_file(text):
     for line in text:
         line = line.strip()
         
-        #counting parapgraphs 
+        #counting paragraphs 
         if line == "":
             if not previous_line_blank: #for empty lines, = start of a paragraph or end of a paragraph
                 data["paragraph_count"] += 1
@@ -186,7 +185,7 @@ def process_file(text):
         i = 0
         while i < len(line):
     
-            if line[i:i+3] == "...": # skipping ellipses
+            if line[i:i+3] == "...": # skipping ellipses, e.g. "what..."
                 i += 3
                 continue 
 
@@ -194,8 +193,7 @@ def process_file(text):
             if line[i] in ".!?": # detecting sentence with punctuation
                 next_char_ok = (i + 1 == len(line)) or (line[i + 1] in ' "”’')
 
-                if next_char_ok:
-                    # Get the sentence candidate
+                if next_char_ok: # Get the sentence
                     sentence = line[start_i:i+1].strip()
                     words = sentence.split()
 

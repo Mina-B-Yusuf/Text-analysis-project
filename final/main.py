@@ -23,6 +23,8 @@ def main():
         except ValueError:
             print("Please enter an integer.")
             return False
+            continue
+        
         
         print ('''
         ==============================================''')
@@ -35,18 +37,21 @@ def main():
                 print(f"{i}. {file}")
                 i += 1
 
-            file_choice = int(input("Choose a file number: ")) - 1
-            if not int(file_choice):
-                print()
+            # ---- Safely get file choice ----
+            try:
+                file_choice = int(input("Choose a file number: ")) - 1
+            except ValueError:
+                print("❌ Please enter a valid integer.")
                 return False
 
+            # ---- Check if file number is valid ----
             if 0 <= file_choice < len(files):
                 filename = os.path.join("texts", files[file_choice])
                 print(f"Processing {filename}...")
-                run_processing_from_main(filename)  
-                data = load_data()  
+                run_processing_from_main(filename)
             else:
-                print("Invalid choice.")
+                print("Please select one of files.")
+                return False
 
 
         elif choice == 2 and data: # display basic statistics

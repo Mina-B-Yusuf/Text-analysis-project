@@ -9,17 +9,21 @@ import json
 # SAVING PROCESSED DATA
 #========================================================================================================================
 
-def saving_stats(data):
-    processed_text_data = {
-    basic_statistics(data),
-    word_analysis(data),
-    sentence_analysis(data),
-    character_analysis(data)
-    }
-    with open("processed_data.json", "w", encoding="utf-8") as json_file:
-        json.dump(processed_text_data, json_file, indent=4, ensure_ascii=False)
-
-    print(f"Processing complete. Results saved to processed_data.json from {filename}")
+def saving_stats(data, filename="results.txt"):
+    try:
+        with open(filename, "w", encoding="utf-8") as file:
+            file.write("---- Basic Statistics ----\n")
+            basic_statistics(data)
+            file.write("\n---- Word Analysis ----\n")
+            word_analysis(data)
+            file.write("\n---- Sentence Analysis ----\n")
+            sentence_analysis(data)
+            file.write("\n---- Character Analysis ----\n")
+            character_analysis(data)
+    except IOError as e:
+        print("Error saving results:", e)
+    else:
+        print(f"Results successfully saved to {filename}"))
 
 
 #========================================================================================================================

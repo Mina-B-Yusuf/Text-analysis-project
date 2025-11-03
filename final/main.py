@@ -23,7 +23,20 @@ def saving_stats(data, filename="results.txt"):
     except IOError as e:
         print("Error saving results:", e)
     else:
-        print(f"Results successfully saved to {filename}"))
+        print(f"Results successfully saved to {filename}")
+
+
+#========================================================================================================================
+# ROBUST INPUT HANDELING
+#========================================================================================================================
+
+
+def get_int(prompt):
+    try:
+        return int(input(prompt))
+    except ValueError:
+        print("Please enter a valid integer.")
+        return None
 
 
 #========================================================================================================================
@@ -31,7 +44,9 @@ def saving_stats(data, filename="results.txt"):
 #========================================================================================================================
 
 def main():
-    data = load_data()
+    data = None
+    filename = None
+
     while True: #keep looping forever — until I manually tell it to stop
         print ('''
         ===============================================
@@ -44,18 +59,16 @@ def main():
         5. Character analysis
         6. Export results
         7. Exit''')
-        try:
-            file_choice = int(input("Choose a file number: ")) - 1
-        except ValueError:
-            print("Please enter an integer.")
-            return False
+        
+        menu_choice = get_int("Enter your choice: ")
+        if menu_choice is None:
             continue
 
         
         print ('''
         ==============================================''')
 
-        if choice == 1 : # load text file
+        if menu_choice == 1:  # load data
             print("Available text files:")
             files = [f for f in os.listdir("texts") if f.endswith(".txt")]
             i = 1
@@ -63,25 +76,26 @@ def main():
                 print(f"{i}. {file}")
                 i += 1
 
-            # ---- Safely get file choice ----
-            try:
-                file_choice = int(input("Choose a file number: ")) - 1
-            except ValueError:
-                print("❌ Please enter a valid integer.")
-                return False
+            file_choice = get_int("Enter your choice: ") -1
+            if file_choice is None:
+                continue
 
-            # ---- Check if file number is valid ----
             if 0 <= file_choice < len(files):
                 filename = os.path.join("texts", files[file_choice])
                 print(f"Processing {filename}...")
                 run_processing_from_main(filename)
+                data = load_data()
+                print("✅ File loaded successfully.")
             else:
-                print("Please select one of files.")
-                return False
+                print("Invalid selection.")
+                continue
 
 
-        elif choice == 2 and data: # display basic statistics
+        elif menu_choice == 2: # display basic statistics
             print("--------- Basic Statistics---------")
+            if 'filename' not in locals() or data is None:
+                print("⚠️ Please load a text file first (option 1).")
+                continue
             print(f"Processing {filename}...")
             basic_statistics(data)
             print()
@@ -96,8 +110,11 @@ def main():
 
 
 
-        elif choice == 3: # word frequency analysis
+        elif menu_choice == 3: # word frequency analysis
             print ("--------- Word Analysis ---------")
+            if 'filename' not in locals() or data is None:
+                print("⚠️ Please load a text file first (option 1).")
+                continue
             print(f"Processing {filename}...")
             word_analysis(data)
             print('''
@@ -108,8 +125,11 @@ def main():
                 word_analysis_visuals(data)
             continue
 
-        elif choice == 4:
+        elif menu_choice == 4:
             print ("--------- Sentence Analysis ---------")
+            if 'filename' not in locals() or data is None:
+                print("⚠️ Please load a text file first (option 1).")
+                continue
             print(f"Processing {filename}...")
             sentence_analysis(data)
             print()
@@ -121,8 +141,11 @@ def main():
                 sentence_analysis_visuals(data)
             continue 
 
-        elif choice == 5:
+        elif menu_choice == 5:
             print ("--------- Character Analysis ---------")
+            if 'filename' not in locals() or data is None:
+                print("⚠️ Please load a text file first (option 1).")
+                continue
             print(f"Processing {filename}...")
             character_analysis(data)
             print()
@@ -134,13 +157,17 @@ def main():
                 character_analysis_visuals(data)
             continue
 
-        elif choice == 6:
+        elif menu_choice == 6:
+            if 'filename' not in locals() or data is None:
+                print("⚠️ Please load a text file first (option 1).")
+                continue
+            print(f"saving {filename}...")
             saving_stats(data, filename="results.txt")
 
         else: 
             break      #break the loop
             print (7)   # exit
-        print('press enter to continue...')
+        input("Press Enter to return to the menu...")
 
 if __name__ == "__main__":
     main()

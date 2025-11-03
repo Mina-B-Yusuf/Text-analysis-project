@@ -1,9 +1,23 @@
-from stats_functions import load_data, basic_statistics, word_analysis, sentence_analysis, character_analysis
+from stats_functions import load_data, basic_statistics, word_analysis, sentence_analysis, character_analysis, display_basic_statistics, display_word_analysis,display_sentence_analysis, display_character_analysis
 from visuals import basic_statistics_visuals, word_analysis_visuals, sentence_analysis_visuals, character_analysis_visuals
 
 from file_processing import run_processing_from_main
 import os
 import json
+
+#========================================================================================================================
+# PROCESSING DATA
+#========================================================================================================================
+
+def run_all_analyses(data):
+    """Run all analysis functions once and store their results in one dictionary."""
+    all_stats = {
+        "basic": basic_statistics(data),
+        "word": word_analysis(data),
+        "sentence": sentence_analysis(data),
+        "character": character_analysis(data)
+    }
+    return all_stats
 
 #========================================================================================================================
 # SAVING PROCESSED DATA
@@ -85,6 +99,7 @@ def main():
                 print(f"Processing {filename}...")
                 run_processing_from_main(filename)
                 data = load_data()
+                all_stats = run_all_analyses(data)
                 print("✅ File loaded successfully.")
             else:
                 print("Invalid selection.")
@@ -97,7 +112,7 @@ def main():
                 print("⚠️ Please load a text file first (option 1).")
                 continue
             print(f"Processing {filename}...")
-            basic_statistics(data)
+            display_basic_statistics(all_stats["basic"])
             print()
             print('''
                 1. Visuals for Basics Statistics
@@ -116,7 +131,7 @@ def main():
                 print("⚠️ Please load a text file first (option 1).")
                 continue
             print(f"Processing {filename}...")
-            word_analysis(data)
+            display_word_analysis(all_stats["word"])
             print('''
                 1. Visuals for Word Analysis
                 2. Back to menu''')
@@ -131,7 +146,7 @@ def main():
                 print("⚠️ Please load a text file first (option 1).")
                 continue
             print(f"Processing {filename}...")
-            sentence_analysis(data)
+            display_sentence_analysis(all_stats["sentence"])
             print()
             print('''
                 1. Visuals for Sentence analysis
@@ -147,7 +162,7 @@ def main():
                 print("⚠️ Please load a text file first (option 1).")
                 continue
             print(f"Processing {filename}...")
-            character_analysis(data)
+            display_character_analysis(all_stats["character"])
             print()
             print('''
                 1. Visuals for character analysis

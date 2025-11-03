@@ -135,8 +135,7 @@ def main():
             continue
 
         elif choice == 6:
-            print ('6')   # export resultat
-            saving_stats(data)
+            saving_stats(data, filename="results.txt")
 
         else: 
             break      #break the loop

@@ -62,10 +62,7 @@ def word_var_function(words, data):
         # Count the word
         words_per_line += 1
         data["words_dic_all"]["word_lengths"].append(len(word))
-        if word in data["words_dic_all"]["words_dic"]:
-            data["words_dic_all"]["words_dic"][word] += 1
-        else:
-            data["words_dic_all"]["words_dic"][word] = 1
+        data["words_dic_all"]["words_dic"][word] = data["words_dic_all"]["words_dic"].get(word, 0) + 1
 
     # Add total word count for the line
     data["words_dic_all"]["words_per_sentence_list"].append(words_per_line)
@@ -105,8 +102,10 @@ def is_valid_sentence(sentence, words, abbreviations): #Returns True if this sen
     if last_word in abbreviations: # skipping dots used for abbreviations, e.g. "DR."
         return False
 
-    if len(words) >= 2 and all(len(w) == 2 and w[1] == '.' for w in words[-2:]): #skipping character with only 2 character "U.", and where the second cahracter is a "." for two last characters of sentence, e.g. U.S.
-        return False
+    if len(words) >= 2:
+        last_two = words[-2:]
+        if all(len(w) == 2 and w[1] == '.' for w in last_two):
+            return False
 
     return True
 
@@ -165,7 +164,6 @@ def process_file(text):
 
 
     for line in text:
-        line = line.strip()
         
         #counting paragraphs 
         if line == "":
@@ -174,6 +172,8 @@ def process_file(text):
             previous_line_blank = True
             continue 
         previous_line_blank = False
+
+        line = line.strip()
 
         if sentence_from_prev_line: # Combine with leftover sentence from previous line
             line = sentence_from_prev_line + " " + line
@@ -188,7 +188,7 @@ def process_file(text):
                 continue 
 
         
-            if line[i] in ".!?": # detecting sentence with punctuation
+            if line[i] in ".!?": # Check for sentence-ending punctuation marks
                 next_char_ok = (i + 1 == len(line)) or (line[i + 1] in ' "”’') # to check if its end of line or if there is a e,g, - road." marking or a space
 
                 if next_char_ok: # Get the sentence

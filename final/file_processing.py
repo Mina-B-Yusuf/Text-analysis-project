@@ -130,7 +130,7 @@ def analyze_sentence(sentence, data):
 
 
 
-def process_file(text):
+def process_file(file_object):
 
     #=============================== Initialize global counters and storage ==============================================
     data = {
@@ -163,7 +163,7 @@ def process_file(text):
     #============================================= Main loop  ==============================================
 
 
-    for line in text:
+    for line in file_object:
         
         #counting paragraphs 
         if line == "":
@@ -217,9 +217,7 @@ def process_file(text):
 
 def run_processing_from_main(filename):
     with open(filename, "r", encoding="utf-8") as f:
-        text = f.readlines()
-
-    processed_text_data = process_file(text)
+        processed_text_data = process_file(f) 
 
     with open("processed_data.json", "w", encoding="utf-8") as json_file:
         json.dump(processed_text_data, json_file, indent=4, ensure_ascii=False)

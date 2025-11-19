@@ -162,18 +162,20 @@ def process_file(file_object):
 
     #============================================= Main loop  ==============================================
 
+    paragraph_started = False
 
     for line in file_object:
         
-        #counting paragraphs 
-        if line == "":
-            if not previous_line_blank: #for empty lines, = start of a paragraph or end of a paragraph
-                data["paragraph_count"] += 1
-            previous_line_blank = True
-            continue 
-        previous_line_blank = False
-
         line = line.strip()
+
+        # paragraph counting logic
+        if line:
+            if not paragraph_started:
+                data["paragraph_count"] += 1
+                paragraph_started = True
+        else:
+            paragraph_started = False
+
 
         if sentence_from_prev_line: # Combine with leftover sentence from previous line
             line = sentence_from_prev_line + " " + line

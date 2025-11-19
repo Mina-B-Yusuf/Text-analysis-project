@@ -30,13 +30,17 @@ def basic_statistics(data):
     #---------------------- average characters per word ----------------------
     average_characters_per_word = round(total_characters / number_of_words, 2)
 
+    #---------------------- average characters per word ----------------------
+    num_of_paragraph = data['paragraph_count']
+
     #---------------------- return results instead of printing ----------------------
     return {
         "num_sentences": len(data["sentence_lengths"]),
         "num_words": number_of_words,
         "num_characters": total_characters,
         "avg_words_per_sentence": average_words_per_sentence,
-        "avg_chars_per_word": average_characters_per_word
+        "avg_chars_per_word": average_characters_per_word,
+        "num_of_paragraph": num_of_paragraph 
     }
 
 def display_basic_statistics(stats):
@@ -47,6 +51,7 @@ def display_basic_statistics(stats):
     print(f"{'Number of characters:':35} {stats['num_characters']:,}")
     print(f"{'Average words per sentence:':35} {stats['avg_words_per_sentence']:.2f}")
     print(f"{'Average characters per word:':35} {stats['avg_chars_per_word']:.2f}")
+    print(f"{'Number of paragraphs:':35} {stats["num_of_paragraph"]:.2f}")
 
 
 

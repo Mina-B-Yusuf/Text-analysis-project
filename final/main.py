@@ -1,5 +1,6 @@
 from stats_functions import load_data, basic_statistics, word_analysis, sentence_analysis, character_analysis, display_basic_statistics, display_word_analysis,display_sentence_analysis, display_character_analysis
 from visuals import basic_statistics_visuals, word_analysis_visuals, sentence_analysis_visuals, character_analysis_visuals
+import stats_functions as sf
 
 from file_processing import run_processing_from_main
 import os
@@ -26,8 +27,9 @@ def run_all_analyses(data):
 def saving_stats(data, filename="results.txt"):
     try:
         with open(filename, "w", encoding="utf-8") as file:
+
             file.write("---- Basic Statistics ----\n")
-            basic_statistics(data)
+            file.write(display_basic_statistics(data))
             file.write("\n---- Word Analysis ----\n")
             word_analysis(data)
             file.write("\n---- Sentence Analysis ----\n")

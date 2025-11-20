@@ -102,7 +102,7 @@ def main():
                 run_processing_from_main(filename)
                 data = load_data()
                 all_stats = run_all_analyses(data)
-                print("✅ File loaded successfully.")
+                print("File loaded successfully.")
             else:
                 print("Invalid selection.")
                 continue

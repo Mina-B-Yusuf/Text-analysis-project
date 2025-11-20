@@ -24,23 +24,11 @@ def run_all_analyses(data):
 # SAVING PROCESSED DATA
 #========================================================================================================================
 
-def saving_stats(data, filename="results.txt"):
-    try:
-        with open(filename, "w", encoding="utf-8") as file:
+def saving_stats(all_stats, filename="results.txt"):
+    with open("results.json", "w", encoding="utf-8") as json_file:
+        json.dump(all_stats, json_file, indent=4, ensure_ascii=False)
 
-            file.write("---- Basic Statistics ----\n")
-            file.write(display_basic_statistics(data))
-            file.write("\n---- Word Analysis ----\n")
-            word_analysis(data)
-            file.write("\n---- Sentence Analysis ----\n")
-            sentence_analysis(data)
-            file.write("\n---- Character Analysis ----\n")
-            character_analysis(data)
-    except IOError as e:
-        print("Error saving results:", e)
-    else:
-        print(f"Results successfully saved to {filename}")
-
+    print(f"Processing complete. Results saved to results.json from {filename}")
 
 #========================================================================================================================
 # ROBUST INPUT HANDELING

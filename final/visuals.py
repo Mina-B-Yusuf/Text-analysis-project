@@ -18,37 +18,81 @@ def load_data():
 
 def basic_statistics_visuals(data):
 
-    #---------------------- number of words ----------------------
-    number_of_words = sum(data["words_dic_all"]["words_dic"].values())
-
-    #---------------------- number of characters ----------------------
+    # ---------------------- Compute basic stats ----------------------
+    num_sentences = len(data["sentence_lengths"])
+    num_words = sum(data["words_dic_all"]["words_dic"].values())
     num_upper = sum(data["characters_dic"]["letters"]["uppercase"].values())
     num_lower = sum(data["characters_dic"]["letters"]["lowercase"].values())
     num_punct = sum(data["characters_dic"]["punctuation"].values())
+    num_spaces = data["characters_dic"]["spaces"]
+    num_digits = data["characters_dic"]["digits"]
+
     total_characters = num_upper + num_lower + num_punct
 
-    #---------------------- average words per sentence ----------------------
-    average_words_per_sentence = round(sum(data["words_dic_all"]["words_per_sentence_list"]) /len(data["sentence_lengths"]), 2)
+    avg_words_per_sentence = (
+        round(sum(data["words_dic_all"]["words_per_sentence_list"]) / num_sentences, 2)
+        if num_sentences > 0 else 0
+    )
 
-    #---------------------- average characters per word ----------------------
-    average_characters_per_word = round(total_characters / number_of_words, 2)
+    avg_chars_per_word = (
+        round(total_characters / num_words, 2)
+        if num_words > 0 else 0
+    )
 
-    basic_statistics_dic = {
-        "Sentences": len(data["sentence_lengths"]),
-        "unique words": data["words_dic_all"]["words_dic"]
-    }
+    # ---------------------- BAR CHART: Text Composition ----------------------
+    labels = [
+        "Sentences",
+        "Words",
+        "Characters",
+        "Paragraphs",
+        "Avg words/sentence",
+        "Avg chars/word"
+    ]
 
+    values = [
+        num_sentences,
+        num_words,
+        total_characters,
+        data["paragraph_count"],
+        avg_words_per_sentence,
+        avg_chars_per_word
+    ]
 
-    #---------------------- display ----------------------
-    print("---- Basic Statistics ----")
-    plt.figure(9, 6)
-    plt.bar( x =  basic_statistics_dic )
-    plt.xticks(rotation = 45, fontsize = 13)
-    plt.ysticks(fontsize = 13)
-    plt.title("---- Basic Statistics ----")
+    plt.figure(figsize=(10, 6))
+    plt.bar(labels, values, color="#779ECB")
+    plt.title("Text Composition Overview", fontsize=16)
+    plt.xticks(rotation=25, fontsize=12)
+    plt.ylabel("Value", fontsize=12)
+    plt.grid(axis="y", alpha=0.4)
+    plt.tight_layout()
+    plt.show()
 
+    # ---------------------- PIE CHART: Character Types ----------------------
+    char_labels = ["Letters", "Digits", "Spaces", "Punctuation"]
+    char_values = [
+        num_upper + num_lower,
+        num_digits,
+        num_spaces,
+        num_punct
+    ]
 
-    
+    # Avoid messy overlapping labels
+    explode = [0.05 if v > 0 else 0 for v in char_values]
+
+    plt.figure(figsize=(8, 6))
+    plt.pie(
+        char_values,
+        labels=char_labels,
+        autopct="%1.1f%%",
+        startangle=90,
+        explode=explode,
+        pctdistance=0.8,
+        textprops={"fontsize": 12}
+    )
+
+    plt.title("Character Type Distribution", fontsize=16)
+    plt.tight_layout()
+    plt.show()
 
 
 

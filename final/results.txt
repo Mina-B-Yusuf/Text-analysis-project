@@ -1,29 +1,29 @@
 === BASIC STATISTICS ===
 num_sentences: 14614
-num_words: 204483
+num_words: 201063
 num_characters: 921055
-avg_words_per_sentence: 13.99
-avg_chars_per_word: 4.5
+avg_words_per_sentence: 13.76
+avg_chars_per_word: 4.58
 num_of_paragraph: 4028
 
 === WORD STATISTICS ===
 shortest_word_length: 1
-longest_word_length: 25
-average_word_length: 4.34
-unique_word_count: 10570
-words_appearing_once: 4569
-total_words: 204483
+longest_word_length: 26
+average_word_length: 4.61
+unique_word_count: 17115
+words_appearing_once: 8593
+total_words: 201063
 top_words:
-  1. the - 7940 times
-  2. and - 6922 times
-  3. to - 5311 times
-  4. he - 4649 times
-  5. a - 4604 times
-  6. i - 3907 times
-  7. of - 3886 times
-  8. you - 3857 times
-  9. in - 3222 times
-  10. it - 2978 times
+  1. the - 7357 times
+  2. and - 6010 times
+  3. to - 5154 times
+  4. a - 4412 times
+  5. of - 3775 times
+  6. he - 3355 times
+  7. in - 2963 times
+  8. you - 2726 times
+  9. was - 2723 times
+  10. that - 2511 times
 
 
 === SENTENCE STATISTICS ===

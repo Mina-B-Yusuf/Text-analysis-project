@@ -10,30 +10,35 @@ import string
 #=============================== CHARACTER VARIBALES ==============================================
 
 def character_variables_function(sentence, data):
+
+    letters_upper = data["characters_dic"]["letters"]["uppercase"]
+    letters_lower = data["characters_dic"]["letters"]["lowercase"]
+    punctuation = data["characters_dic"]["punctuation"]
+
+    spaces = data["characters_dic"]["spaces"]
+    digits = data["characters_dic"]["digits"]
+
+    punct_set = ".,!?;:-—()[]\"'"
+
     for char in sentence:
+
         if char.isalpha():
             if char.isupper():
-                if char not in data["characters_dic"]["letters"]["uppercase"]:
-                    data["characters_dic"]["letters"]["uppercase"][char] = 1
-                else:
-                    data["characters_dic"]["letters"]["uppercase"][char] += 1
-            elif char.islower():
-                if char not in data["characters_dic"]["letters"]["lowercase"]:
-                    data["characters_dic"]["letters"]["lowercase"][char] = 1
-                else:
-                    data["characters_dic"]["letters"]["lowercase"][char] += 1
+                letters_upper[char] = letters_upper.get(char, 0) + 1
+            else: 
+                letters_lower[char] = letters_lower.get(char, 0) + 1
 
-        elif char in ".,!?;:-—()[]\"'":
-            if char not in data["characters_dic"]["punctuation"]:
-                data["characters_dic"]["punctuation"][char] = 1
-            else:
-                data["characters_dic"]["punctuation"][char] += 1
+        elif char in punct_set:
+            punctuation[char] = punctuation.get(char, 0) + 1
 
         elif char == " ":
-            data["characters_dic"]["spaces"] += 1
+            spaces += 1
 
         elif char.isdigit():
-            data["characters_dic"]["digits"] += 1
+            digits += 1
+
+    data["characters_dic"]["spaces"] = spaces
+    data["characters_dic"]["digits"] = digits
 
     return data
 
@@ -42,47 +47,44 @@ def character_variables_function(sentence, data):
 #=============================== WORD VARIBALES ==============================================
 
 def word_var_function(words, data):
+
+    words_dic = data["words_dic_all"]["words_dic"]
+    word_lengths = data["words_dic_all"]["word_lengths"]
+    wps_list = data["words_dic_all"]["words_per_sentence_list"]
+
     words_per_line = 0
+
+    allowed = string.ascii_letters + "'"
+
     for word in words:
 
-        allowed = string.ascii_letters + "'"
-
-        cleaned = ""
+        # --- clean word  ---
+        clean_chars = []
         for ch in word:
             if ch in allowed:
-                cleaned += ch
+                clean_chars.append(ch)
             else:
-                cleaned += " "
-
-        word = cleaned.lower().strip()
+                clean_chars.append(" ")
+        word = "".join(clean_chars)
 
         if not word:
             continue
 
-        if word.isdigit(): # Skip numeric-only words (e.g., "2001", "50") 
+        # Skip numeric-only words
+        if word.isdigit():
             continue
 
-        # --- Skip single-letter words (like "z") ---
-        # (You can remove this check if you want to keep "a" or "I")
+        # Skip single-letter junk
         if len(word) == 1 and word not in ("a", "i"):
             continue
 
-        only_punct = True
-        for ch in word:
-            if ch not in ".,!?;:-—()[]\"'":
-                only_punct = False
-                break
-
-        if only_punct:
-            continue
-
-        # Count the word
+        # Count word
         words_per_line += 1
-        data["words_dic_all"]["word_lengths"].append(len(word))
-        data["words_dic_all"]["words_dic"][word] = data["words_dic_all"]["words_dic"].get(word, 0) + 1
+        word_lengths.append(len(word))
+        words_dic[word] = words_dic.get(word, 0) + 1
 
     # Add total word count for the line
-    data["words_dic_all"]["words_per_sentence_list"].append(words_per_line)
+    wps_list.append(words_per_line)
     return data
 
 
@@ -182,8 +184,7 @@ def process_file(file_object):
 
     for line in file_object:
         
-        raw = line  # DO NOT strip first
-
+        raw = line
         if raw.strip() == "":
             paragraph_started = False
             line = raw.strip()
@@ -197,36 +198,50 @@ def process_file(file_object):
         if sentence_from_prev_line: # Combine with leftover sentence from previous line
             line = sentence_from_prev_line + " " + line
             sentence_from_prev_line = ""
-
-        start_i = 0
+            
+        line_len = len(line)
         i = 0
-        while i < len(line):
-    
-            if line[i:i+3] == "...": # skipping ellipses, e.g. "what..."
+        start_i = 0
+        line_chars = line  # local reference for speed
+
+        while i < line_len:
+
+            # check ellipses
+            if i + 2 < line_len and line_chars[i] == '.' and line_chars[i+1] == '.' and line_chars[i+2] == '.':
                 i += 3
-                continue 
+                continue
 
-        
-            if line[i] in ".!?": # Check for sentence-ending punctuation marks
-                next_char_ok = (i + 1 == len(line)) or (line[i + 1] in ' "”’') # to check if its end of line or if there is a e,g, - road." marking or a space
+            ch = line_chars[i]
 
-                if next_char_ok: # Get the sentence
-                    sentence = line[start_i:i+1].strip()
+            # check sentence-ending punctuation
+            if ch == '.' or ch == '!' or ch == '?':
+
+                # next char check (same logic, faster)
+                if i + 1 == line_len:
+                    next_char_ok = True
+                else:
+                    next_char_ok = line_chars[i+1] in (' ', '"', '”', '’')
+
+                if next_char_ok:
+                    sentence = line_chars[start_i:i+1].strip()
                     words = sentence.split()
 
                     if is_valid_sentence(sentence, words, abbreviations):
-                        data = analyze_sentence(sentence, words, data) #deriving needed data
-                    start_i = i + 1 #restarting starting index
+                        data = analyze_sentence(sentence, words, data)
+                    start_i = i + 1
 
             i += 1
 
-        if start_i < len(line): # If text remains after punctuation, carry it to next line
-            sentence_from_prev_line = line[start_i:].strip()
+        # leftover text for next line
+        if start_i < line_len:
+            sentence_from_prev_line = line_chars[start_i:].strip()
+        else:
+            sentence_from_prev_line = ""
 
 
     if sentence_from_prev_line: # If leftover sentence remains at end of file, process it
-        data = analyze_sentence(sentence_from_prev_line, sentence_from_prev_line.split(), data)
-
+        words = sentence_from_prev_line.split()
+        data = analyze_sentence(sentence_from_prev_line, words, data)
     return data
 
 

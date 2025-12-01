@@ -18,9 +18,10 @@ def load_data():
 
 def basic_statistics_visuals(data):
 
-    # ---------------------- Compute basic stats ----------------------
+    # ---------------------- compute basic stats ----------------------
     num_sentences = len(data["sentence_lengths"])
     num_words = sum(data["words_dic_all"]["words_dic"].values())
+
     num_upper = sum(data["characters_dic"]["letters"]["uppercase"].values())
     num_lower = sum(data["characters_dic"]["letters"]["lowercase"].values())
     num_punct = sum(data["characters_dic"]["punctuation"].values())
@@ -29,71 +30,33 @@ def basic_statistics_visuals(data):
 
     total_characters = num_upper + num_lower + num_punct
 
-    avg_words_per_sentence = (
-        round(sum(data["words_dic_all"]["words_per_sentence_list"]) / num_sentences, 2)
-        if num_sentences > 0 else 0
-    )
+    num_paragraphs = data["paragraph_count"]
 
-    avg_chars_per_word = (
-        round(total_characters / num_words, 2)
-        if num_words > 0 else 0
-    )
+    # BAR CHART 
+    labels = ["Sentences", "Words", "Characters", "Paragraphs"]
+    values = [num_sentences, num_words, total_characters, num_paragraphs]
 
-    # ---------------------- BAR CHART: Text Composition ----------------------
-    labels = [
-        "Sentences",
-        "Words",
-        "Characters",
-        "Paragraphs",
-        "Avg words/sentence",
-        "Avg chars/word"
-    ]
-
-    values = [
-        num_sentences,
-        num_words,
-        total_characters,
-        data["paragraph_count"],
-        avg_words_per_sentence,
-        avg_chars_per_word
-    ]
-
-    plt.figure(figsize=(10, 6))
-    plt.bar(labels, values, color="#779ECB")
-    plt.title("Text Composition Overview", fontsize=16)
-    plt.xticks(rotation=25, fontsize=12)
-    plt.ylabel("Value", fontsize=12)
-    plt.grid(axis="y", alpha=0.4)
+    plt.figure(figsize=(10, 5))
+    plt.bar(labels, values)
+    plt.title("Basic Text Composition")
+    plt.ylabel("Count")
+    plt.xlabel("Statistic")
+    plt.grid(axis="y", linestyle="--", alpha=0.5)
     plt.tight_layout()
     plt.show()
 
-    # ---------------------- PIE CHART: Character Types ----------------------
+    # PIE CHART
     char_labels = ["Letters", "Digits", "Spaces", "Punctuation"]
-    char_values = [
-        num_upper + num_lower,
-        num_digits,
-        num_spaces,
-        num_punct
-    ]
+    char_values = [num_upper + num_lower, num_digits, num_spaces, num_punct]
 
-    # Avoid messy overlapping labels
-    explode = [0.05 if v > 0 else 0 for v in char_values]
+    explode = [0.05, 0.05, 0.05, 0.05]  # pull slices out slightly
 
-    plt.figure(figsize=(8, 6))
-    plt.pie(
-        char_values,
-        labels=char_labels,
-        autopct="%1.1f%%",
-        startangle=90,
-        explode=explode,
-        pctdistance=0.8,
-        textprops={"fontsize": 12}
-    )
-
-    plt.title("Character Type Distribution", fontsize=16)
+    plt.figure(figsize=(7, 7))
+    plt.pie(char_values, labels=char_labels, autopct="%1.1f%%",
+            startangle=140, explode=explode)
+    plt.title("Character Type Distribution")
     plt.tight_layout()
     plt.show()
-
 
 
 #========================================================================================================================
@@ -154,7 +117,15 @@ def word_analysis_visuals(data):
     plt.show()
 
     
-
+    # HISTOGRAM 
+    plt.figure(figsize=(10, 6))
+    plt.hist(word_lengths, bins=20, edgecolor='black')
+    plt.title("Histogram of Word Lengths", fontsize=14, fontweight='bold')
+    plt.xlabel("Word Length", fontsize=12)
+    plt.ylabel("Frequency", fontsize=12)
+    plt.grid(axis="y", linestyle="--", alpha=0.5)
+    plt.tight_layout()
+    plt.show()
 
 
 
@@ -164,7 +135,7 @@ def word_analysis_visuals(data):
 
 def sentence_analysis_visuals(data):
 
-    #---------------------- sentence length distribution ----------------------
+    # ---------------------- sentence length distribution ----------------------
     sentence_lengths = data["sentence_lengths"]
     length_counts = {}
 
@@ -185,16 +156,25 @@ def sentence_analysis_visuals(data):
         length = pair[1]
         sentence_lengths_visualisation[length] = freq
         shown += 1
-        if shown == 5:    # only keep top 5 like in your project description
+        if shown == 5:
             break
 
-    #======================================== visualization ============================================
-
+    # ---------------------- bar chart (top 5 sentence lengths) ----------------------
     plt.figure(figsize=(9, 6))
-    plt.bar(sentence_lengths_visualisation.keys(), sentence_lengths_visualisation.values(), color='skyblue', edgecolor='black')
-    plt.xticks(rotation=45, fontsize=12)
-    plt.yticks(fontsize=12)
-    plt.title("Sentence length distribution (Top 5)", fontsize=14, fontweight='bold')
+    plt.bar(sentence_lengths_visualisation.keys(),
+            sentence_lengths_visualisation.values(),
+            edgecolor='black')
+    plt.xticks(rotation=45)
+    plt.title("Sentence Length Distribution (Top 5)")
+    plt.tight_layout()
+    plt.show()
+
+    # ---------------------- histogram of all sentence lengths ----------------------
+    plt.figure(figsize=(9, 6))
+    plt.hist(sentence_lengths, bins=30, edgecolor="black")
+    plt.title("Sentence Length Histogram")
+    plt.xlabel("Sentence length (words)")
+    plt.ylabel("Frequency")
     plt.tight_layout()
     plt.show()
 
@@ -204,57 +184,57 @@ def sentence_analysis_visuals(data):
 # CHARACTER ANALYSIS
 #========================================================================================================================
 def character_analysis_visuals(data):
-    #---------------------- merge uppercase and lowercase ----------------------
+
+    # ---------------------- merge uppercase + lowercase ----------------------
     letters_upper = data["characters_dic"]["letters"]["uppercase"]
     letters_lower = data["characters_dic"]["letters"]["lowercase"]
 
     for letter, freq in letters_upper.items():
-        letter_lower = letter.lower()
-        if letter_lower in letters_lower:
-            letters_lower[letter_lower] += freq
-        else:
-            letters_lower[letter_lower] = freq
+        small = letter.lower()
+        letters_lower[small] = letters_lower.get(small, 0) + freq
 
-    pairs = list(letters_lower.items())
-    items = [[freq, letter] for (letter, freq) in pairs]
-    items.sort(reverse=True)
+    # ---------------------- Top 10 letters ----------------------
+    pairs = []
+    for letter, freq in letters_lower.items():
+        pairs.append([freq, letter])
 
-    characters_visuals_dic = {}
-    for pair in items[:10]:
-        freq = pair[0]
-        letter = pair[1]
-        characters_visuals_dic[letter] = freq
+    pairs.sort(reverse=True)
 
-    #---------------------- character type distribution ----------------------
-   # letters_count = sum(letters_lower.values())
-    #digits = data["characters_dic"]["digits"]
-    #spaces = data["characters_dic"]["spaces"]
-    #punctuation = sum(data["characters_dic"]["punctuation"].values())
-    #total_characters = letters_count + digits + spaces + punctuation
+    top_letters_dic = {}
+    for freq, letter in pairs[:10]:
+        top_letters_dic[letter] = freq
 
-    #type_distribution = {
-       #"Letters": letters_count,
-        #"Digits": digits,
-        #"Spaces": spaces,
-        #"Punctuation": punctuation}
+    # ---------------------- Character type distribution ----------------------
+    letters_count = sum(letters_lower.values())
+    digits = data["characters_dic"]["digits"]
+    spaces = data["characters_dic"]["spaces"]
+    punctuation = sum(data["characters_dic"]["punctuation"].values())
 
-    #======================================== visualization ============================================
+    type_distribution = {
+        "letters": letters_count,
+        "digits": digits,
+        "spaces": spaces,
+        "punctuation": punctuation
+    }
 
-    # --- Character type distribution ---
-    #plt.figure(figsize=(8, 6))
-    #plt.bar(type_distribution.keys(), type_distribution.values(), color='lightcoral', edgecolor='black')
-    #plt.title("Character Type Distribution", fontsize=14, fontweight='bold')
-    #plt.xticks(rotation=30, fontsize=12)
-    #plt.yticks(fontsize=12)
-    #plt.tight_layout()
-   # plt.show()
+    # ---------------------- Visualization ----------------------
 
-    # --- Top 10 most common letters ---
+    # --- Top 10 letters (bar chart) ---
     plt.figure(figsize=(9, 6))
-    plt.bar(characters_visuals_dic.keys(), characters_visuals_dic.values(), color='skyblue', edgecolor='black')
-    plt.xticks(rotation=45, fontsize=12)
-    plt.yticks(fontsize=12)
-    plt.title("Top 10 Most Common Letters", fontsize=14, fontweight='bold')
+    plt.bar(top_letters_dic.keys(), top_letters_dic.values(), edgecolor="black")
+    plt.xticks(rotation=45)
+    plt.title("Top 10 Most Common Letters")
+    plt.tight_layout()
+    plt.show()
+
+    # --- Character types (pie chart) ---
+    plt.figure(figsize=(8, 6))
+    plt.pie(
+        type_distribution.values(),
+        labels=type_distribution.keys(),
+        autopct="%1.1f%%"
+    )
+    plt.title("Character Type Distribution")
     plt.tight_layout()
     plt.show()
  

@@ -183,7 +183,8 @@ def main():
                 data=data, 
                 stat_key="word", 
                 display_func=stats.display_word_analysis, 
-                visual_func=visuals.word_analysis_visuals
+                visual_func=visuals.word_analysis_visuals,
+                all_stats=all_stats
             )
 
 
@@ -194,7 +195,8 @@ def main():
                 data=data, 
                 stat_key="sentence", 
                 display_func=stats.display_sentence_analysis, 
-                visual_func=visuals.sentence_analysis_visuals
+                visual_func=visuals.sentence_analysis_visuals,
+                all_stats=all_stats
             )
 
         elif menu_choice == 5:
@@ -204,7 +206,8 @@ def main():
                 data=data, 
                 stat_key="character", 
                 display_func=stats.display_character_analysis, 
-                visual_func=visuals.character_analysis_visuals
+                visual_func=visuals.character_analysis_visuals,
+                all_stats=all_stats
             )
 
 

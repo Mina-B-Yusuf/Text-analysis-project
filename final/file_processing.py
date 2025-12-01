@@ -1,5 +1,7 @@
 
 import json
+import string
+
 
 #========================================================================================================================
 # VARIABLE FUNCTIONS
@@ -43,7 +45,17 @@ def word_var_function(words, data):
     words_per_line = 0
     for word in words:
 
-        word = word.lower().strip(".,!?;:-—()[]\"'") # lowering all letters and striping of quotation marks
+        allowed = string.ascii_letters + "'"
+
+        cleaned = ""
+        for ch in word:
+            if ch in allowed:
+                cleaned += ch
+            else:
+                cleaned += " "
+
+        word = cleaned.lower().strip()
+
         if not word:
             continue
 

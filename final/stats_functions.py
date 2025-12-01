@@ -93,17 +93,17 @@ def word_analysis(data):
         average_word_length = 0
 
     # ---------------------- convert dictionary to list ----------------------
-    # pairs will be: [ [word, count], [word, count], ... ]
+    # pairs will be: [ [count, word], [count, word], ... ]
     pairs = []
     for w, c in word_dic.items():
-        pairs.append([w, c])
+        pairs.append([c, w])   # NOTE: count first, THEN word
 
-    # ---------------------- sort by frequency (bubble sort) ----------------------
+    # ---------------------- sort by frequency ----------------------
     # descending order: largest count first
-    pairs.sort(reverse=True) 
+    pairs.sort(reverse=True)
 
     # ---------------------- extract top 10 words ----------------------
-    # convert into the format [count, word]
+    # already in format [count, word]
     top_words = pairs[:10]
 
     # ---------------------- unique words and words appearing once ----------------------

@@ -1,12 +1,63 @@
-========== BASIC STATISTICS ==========
-Number of sentences          : 14614
-Number of words              : 204527
-Number of characters         : 921055
-Average words per sentence   : 14.00
-Average characters per word  : 4.50
-Number of paragraphs         : 4028
+=== BASIC STATISTICS ===
+num_sentences: 14614
+num_words: 204483
+num_characters: 921055
+avg_words_per_sentence: 13.99
+avg_chars_per_word: 4.5
+num_of_paragraph: 4028
+
+=== WORD STATISTICS ===
+shortest_word_length: 1
+longest_word_length: 25
+average_word_length: 4.34
+unique_word_count: 10570
+words_appearing_once: 4569
+total_words: 204483
+top_words:
+  1. the - 7940 times
+  2. and - 6922 times
+  3. to - 5311 times
+  4. he - 4649 times
+  5. a - 4604 times
+  6. i - 3907 times
+  7. of - 3886 times
+  8. you - 3857 times
+  9. in - 3222 times
+  10. it - 2978 times
 
 
-============== WORD ANALYSIS ==============
-Top 10 Most Common Words:
--------------------------------------------
+=== SENTENCE STATISTICS ===
+num_sentences: 14614
+avg_words_per_sentence: 14.19
+shortest_sentence_text: ” “What!
+longest_sentence_text: “Allow me to explain that I have been living with her for nearly three years and at first... at first... for why should I not confess it, at the very beginning I promised to marry her daughter, it was a verbal promise, freely given... she was a girl... indeed, I liked her, though I was not in love with her... a youthful affair in fact... that is, I mean to say, that my landlady gave me credit freely in those days, and I led a life of... I was very heedless...” “Nobody asks you for these personal details, sir, we’ve no time to waste,” Ilya Petrovitch interposed roughly and with a note of triumph; but Raskolnikov stopped him hotly, though he suddenly found it exceedingly difficult to speak.
+shortest_sentence_length: 2
+longest_sentence_length: 128
+paragraph_count: 4028
+length_distribution:
+  5 words : 1088 sentences
+  4 words : 973 sentences
+  6 words : 955 sentences
+  7 words : 954 sentences
+  8 words : 847 sentences
+
+
+=== CHARACTER STATISTICS ===
+letters_count: 881075
+digits: 142
+spaces: 192821
+punctuation: 39980
+total_characters: 1114018
+top_letters:
+  1. e - 104118 times
+  2. t - 80108 times
+  3. a - 73340 times
+  4. o - 71525 times
+  5. n - 62602 times
+  6. i - 62115 times
+  7. h - 55458 times
+  8. s - 53030 times
+  9. r - 47945 times
+  10. d - 38852 times
+
+

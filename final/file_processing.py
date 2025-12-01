@@ -55,8 +55,13 @@ def word_var_function(words, data):
         if len(word) == 1 and word not in ("a", "i"):
             continue
 
-        # --- Skip junk words that are mostly punctuation ---
-        if all(ch in ".,!?;:-—()[]\"'" for ch in word):
+        only_punct = True
+        for ch in word:
+            if ch not in ".,!?;:-—()[]\"'":
+                only_punct = False
+                break
+
+        if only_punct:
             continue
 
         # Count the word
@@ -71,12 +76,11 @@ def word_var_function(words, data):
 
 #=============================== SENTENCE VARIBALES ==============================================
 
-def sentence_var_function(sentence, data):
-    data["sentence_lengths"].append(len(sentence.split()))
+def sentence_var_function(words, data):
+    data["sentence_lengths"].append(len(words))
     return data
 
-def shortest_and_longest_sentence(sentence, data):
-    words = sentence.split()
+def shortest_and_longest_sentence(sentence, words, data):
     if data["shortest_sentence"] is None or len(words) < len(data["shortest_sentence"].split()):
         data["shortest_sentence"] = sentence
     if data["longest_sentence"] is None or len(words) > len(data["longest_sentence"].split()):
@@ -114,11 +118,11 @@ def is_valid_sentence(sentence, words, abbreviations): #Returns True if this sen
 # SHORT NAMES
 #========================================================================================================================
 
-def analyze_sentence(sentence, data):
-    data = sentence_var_function(sentence, data)
-    data = shortest_and_longest_sentence(sentence, data)
+def analyze_sentence(sentence, words, data):
+    data = sentence_var_function(words, data)
+    data = shortest_and_longest_sentence(sentence, words, data)
     data = character_variables_function(sentence, data)
-    data = word_var_function(sentence.split(), data)
+    data = word_var_function(words, data)
     return data
 
 
@@ -152,10 +156,10 @@ def process_file(file_object):
     }
 
     # possible abbreviations to skip 
-    abbreviations = [
+    abbreviations = {
         "mr.", "mrs.", "dr.", "ms.", "prof.", "sr.", "jr.", "st.",
         "vs.", "etc.", "u.s.", "e.g.", "i.e."
-    ]
+    }
     previous_line_blank = False
     sentence_from_prev_line = ""
 
@@ -166,15 +170,16 @@ def process_file(file_object):
 
     for line in file_object:
         
-        line = line.strip()
+        raw = line  # DO NOT strip first
 
-        # paragraph counting logic
-        if line:
+        if raw.strip() == "":
+            paragraph_started = False
+            line = raw.strip()
+        else:
             if not paragraph_started:
                 data["paragraph_count"] += 1
-                paragraph_started = True
-        else:
-            paragraph_started = False
+            paragraph_started = True
+            line = raw.strip()
 
 
         if sentence_from_prev_line: # Combine with leftover sentence from previous line
@@ -198,7 +203,7 @@ def process_file(file_object):
                     words = sentence.split()
 
                     if is_valid_sentence(sentence, words, abbreviations):
-                        data = analyze_sentence(sentence, data) #deriving needed data
+                        data = analyze_sentence(sentence, words, data) #deriving needed data
                     start_i = i + 1 #restarting starting index
 
             i += 1
@@ -208,7 +213,7 @@ def process_file(file_object):
 
 
     if sentence_from_prev_line: # If leftover sentence remains at end of file, process it
-        data = analyze_sentence(sentence_from_prev_line, data)
+        data = analyze_sentence(sentence_from_prev_line, sentence_from_prev_line.split(), data)
 
     return data
 
@@ -218,10 +223,16 @@ def process_file(file_object):
 #========================================================================================================================
 
 def run_processing_from_main(filename):
-    with open(filename, "r", encoding="utf-8") as f:
-        processed_text_data = process_file(f) 
+    
+    try:
+        with open(filename, "r", encoding="utf-8") as f:
+            processed_text_data = process_file(f)
+    except FileNotFoundError:
+        print("Error: File not found. Please check the filename and try again.")
+        return None
 
     with open("processed_data.json", "w", encoding="utf-8") as json_file:
         json.dump(processed_text_data, json_file, indent=4, ensure_ascii=False)
 
     print(f"Processing complete. Results saved to processed_data.json from {filename}")
+    return processed_text_data

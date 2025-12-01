@@ -4,17 +4,21 @@ import json
 # LOAD DATA
 #========================================================================================================================
 def load_data():
-    with open("processed_data.json", "r", encoding="utf-8") as file:
-        data = json.load(file)
-    return data
+    try:
+        with open("processed_data.json", "r", encoding="utf-8") as file:
+            return json.load(file)
+    except FileNotFoundError:
+        print("Error: processed_data.json not found. Load a text file first.")
+        return None
+    except json.JSONDecodeError:
+        print("Error: processed_data.json is corrupted or empty.")
+        return None
 
 #========================================================================================================================
 # BASIC STATISTICS
 #========================================================================================================================
 
 def basic_statistics(data):
-    """Compute basic text statistics and return them as a dictionary."""
-
     #---------------------- number of words ----------------------
     number_of_words = sum(data["words_dic_all"]["words_dic"].values())
 
@@ -43,49 +47,85 @@ def basic_statistics(data):
         "num_of_paragraph": num_of_paragraph 
     }
 
+
+
+
+
 def display_basic_statistics(stats):
-    print("---- Basic Statistics ----")
-    for label, value in stats.items():
+    print("\n========== Basic Statistics ==========\n")
+
+    labels = {
+        "num_sentences": "Number of sentences",
+        "num_words": "Number of words",
+        "num_characters": "Number of characters",
+        "avg_words_per_sentence": "Average words per sentence",
+        "avg_chars_per_word": "Average characters per word",
+        "num_of_paragraph": "Number of paragraphs"
+    }
+
+    for key, label in labels.items():
+        value = stats[key]
         if isinstance(value, float):
-            print(f"{label:35} {value:.2f}")
+            print(f"{label:<30} : {value:.2f}")
         else:
-            print(f"{label:35} {value}")
+            print(f"{label:<30} : {value:,}")
+
+    print("\n======================================\n")
 
 #========================================================================================================================
 # WORD ANALYSIS
 #========================================================================================================================
-
 def word_analysis(data):
-    """Compute word-based statistics and return them as a dictionary."""
-
-    #---------------------- getting data ----------------------------------------------
     word_dic = data["words_dic_all"]["words_dic"]
     word_lengths = data["words_dic_all"]["word_lengths"]
 
-    #---------------------- sorting according to their frequency ----------------------
-    pairs = list(word_dic.items())
-    items = [[count, word] for (word, count) in pairs]
-    items.sort(reverse=True)
-
+    # ---------------------- total words ----------------------
     total_words = sum(word_dic.values())
 
-    #---------------------- word length statistics --------------------------------
+    # ---------------------- word length statistics ----------------------
     if len(word_lengths) > 0:
         shortest_word_length = min(word_lengths)
         longest_word_length = max(word_lengths)
-        average_word_length = round(sum(word_lengths) / len(word_lengths), 1)
+        average_word_length = round(sum(word_lengths) / len(word_lengths), 2)
     else:
         shortest_word_length = 0
         longest_word_length = 0
         average_word_length = 0
 
-    #---------------------- unique words and words appearing once ----------------------
-    unique_word_count = len(word_dic)
-    words_appearing_once = sum(1 for w in word_dic if word_dic[w] == 1)
+    # ---------------------- convert dictionary to list ----------------------
+    # pairs will be: [ [word, count], [word, count], ... ]
+    pairs = []
+    for w, c in word_dic.items():
+        pairs.append([w, c])
 
-    #---------------------- return computed data ----------------------
+    # ---------------------- sort by frequency (bubble sort) ----------------------
+    # descending order: largest count first
+    for i in range(len(pairs)):
+        for j in range(i + 1, len(pairs)):
+            if pairs[j][1] > pairs[i][1]:
+                temp = pairs[i]
+                pairs[i] = pairs[j]
+                pairs[j] = temp
+
+    # ---------------------- extract top 10 words ----------------------
+    # convert into the format [count, word]
+    top_words = []
+    for elem in pairs[:10]:
+        word = elem[0]
+        count = elem[1]
+        top_words.append([count, word])
+
+    # ---------------------- unique words and words appearing once ----------------------
+    unique_word_count = len(word_dic)
+
+    words_appearing_once = 0
+    for w in word_dic:
+        if word_dic[w] == 1:
+            words_appearing_once += 1
+
+    # ---------------------- return final dictionary ----------------------
     return {
-        "top_words": items[:10],
+        "top_words": top_words,
         "shortest_word_length": shortest_word_length,
         "longest_word_length": longest_word_length,
         "average_word_length": average_word_length,
@@ -94,30 +134,45 @@ def word_analysis(data):
         "total_words": total_words
     }
 
-def display_word_analysis(stats):
-    """Display formatted word analysis results."""
-    print("----- Word Analysis -----")
-    print(" Top 10 most common words:")
 
+def display_word_analysis(stats):
+    print("\n============== Word Analysis ==============\n")
+
+    print("Top 10 Most Common Words:")
+    print("------------------------------------------")
+
+    total = stats["total_words"]
+
+    # stats["top_words"] = list of [count, word]
     rank = 1
-    for pair in stats["top_words"]:
-        frequency = pair[0]
-        word = pair[1]
-        percentage = round((frequency / stats["total_words"]) * 100, 1)
-        print("", rank, ".", word, "-", frequency, "times (", str(percentage) + "%)", sep=" ")
+    for item in stats["top_words"]:
+        count = item[0]
+        word = item[1]
+
+        if total > 0:
+            pct = round((count / total) * 100, 1)
+        else:
+            pct = 0
+
+        print(f"{rank:>2}. {word:<15} {count:>7,} times  ({pct:>4}%)")
         rank += 1
 
-    print(" Shortest word:", stats["shortest_word_length"], "characters")
-    print(" Longest word:", stats["longest_word_length"], "characters")
-    print(" Average word length:", stats["average_word_length"], "characters")
-    print(" Unique words:", stats["unique_word_count"])
-    print(" Words appearing only once:", stats["words_appearing_once"])
+    print("\nWord Statistics:")
+    print("------------------------------------------")
+    print(f"{'Shortest word length':30} : {stats['shortest_word_length']} characters")
+    print(f"{'Longest word length':30} : {stats['longest_word_length']} characters")
+    print(f"{'Average word length':30} : {stats['average_word_length']:.2f} characters")
+    print(f"{'Unique words':30} : {stats['unique_word_count']:,}")
+    print(f"{'Words appearing only once':30} : {stats['words_appearing_once']:,}")
+
+    print("\n===========================================\n")
+
+
 
 #========================================================================================================================
 # SENTENCE ANALYSIS
+#========================================================================================================================
 def sentence_analysis(data):
-    """Compute sentence-based statistics and return them as a dictionary."""
-
     #---------------------- sentence counts and lengths ----------------------
     number_of_sentences = len(data["sentence_lengths"])
 
@@ -159,21 +214,35 @@ def sentence_analysis(data):
         "length_distribution": items[:5] 
     }
 
-def display_sentence_analysis(stats):
-    """Display sentence analysis results in a formatted way."""
-    print("------ Sentence Analysis -----")
-    print(f"{'Total sentences:':35} {stats['num_sentences']}")
-    print(f"{'Average words per sentence:':35} {stats['avg_words_per_sentence']}")
-    print(f"{'Shortest sentence:':35} {stats['shortest_sentence_length']} words")
-    print(f"{'Longest sentence:':35} {stats['longest_sentence_length']} words")
-    print(f"{'Shortest sentence text:':35} {stats['shortest_sentence_text']}")
-    print(f"{'Longest sentence text:':35} {stats['longest_sentence_text'][:100]} ...")
-    print(f"{'Total number of paragraphs:':35} {stats['paragraph_count']}")
-    print()
-    print("Sentence length distribution (top 5):")
-    for freq, length in stats["length_distribution"]:
-        print(f" {length} words: {freq} sentences")
 
+
+def display_sentence_analysis(stats):
+    print("\n========== Sentence Analysis ==========\n")
+
+    labels = {
+        "num_sentences": "Total sentences",
+        "avg_words_per_sentence": "Average words per sentence",
+        "shortest_sentence_length": "Shortest sentence (words)",
+        "longest_sentence_length": "Longest sentence (words)",
+        "paragraph_count": "Total number of paragraphs"
+    }
+
+    for key, label in labels.items():
+        value = stats[key]
+        if isinstance(value, float):
+            print(f"{label:<32} : {value:.2f}")
+        else:
+            print(f"{label:<32} : {value:,}")
+
+    print(f"\n{'Shortest sentence text':<32} : {stats['shortest_sentence_text']}")
+    print(f"{'Longest sentence text':<32} : {stats['longest_sentence_text'][:100]} ...")
+
+    print("\nSentence length distribution (top 5):")
+    print("--------------------------------------")
+    for freq, length in stats["length_distribution"]:
+        print(f"{length:>3} words : {freq:,} sentences")
+
+    print("\n=======================================\n")
 
 
 #========================================================================================================================
@@ -217,16 +286,29 @@ def character_analysis(data):
 
 
 def display_character_analysis(stats):
-    """Display character analysis results in a formatted way."""
-    print(" ------- Character Analysis -------")
-    print(f" Letters: {stats['letters_count']} ({round((stats['letters_count'] / stats['total_characters']) * 100, 1)}%)")
-    print(f" Digits: {stats['digits']} ({round((stats['digits'] / stats['total_characters']) * 100, 1)}%)")
-    print(f" Spaces: {stats['spaces']} ({round((stats['spaces'] / stats['total_characters']) * 100, 1)}%)")
-    print(f" Punctuation: {stats['punctuation']} ({round((stats['punctuation'] / stats['total_characters']) * 100, 1)}%)")
-    print()
-    print(" Most common letters:")
-    rank = 1
-    for freq, letter in stats["top_letters"]:
-        percentage = round((freq / stats["letters_count"]) * 100, 1)
-        print(f"  {rank}. \"{letter}\" - {freq} times ({percentage}%)")
-        rank += 1
+    print("\n=========== Character Analysis ===========\n")
+
+    # --- Character Type Distribution ---
+    print("Character Distribution:")
+    print("------------------------------------------")
+
+    print(f"{'Letters':25} : {stats['letters_count']:>10,} "
+          f"({(stats['letters_count'] / stats['total_characters'] * 100):>5.1f}%)")
+
+    print(f"{'Digits':25} : {stats['digits']:>10,} "
+          f"({(stats['digits'] / stats['total_characters'] * 100):>5.1f}%)")
+
+    print(f"{'Spaces':25} : {stats['spaces']:>10,} "
+          f"({(stats['spaces'] / stats['total_characters'] * 100):>5.1f}%)")
+
+    print(f"{'Punctuation':25} : {stats['punctuation']:>10,} "
+          f"({(stats['punctuation'] / stats['total_characters'] * 100):>5.1f}%)")
+
+    print("\nMost Common Letters:")
+    print("------------------------------------------")
+
+    for rank, (freq, letter) in enumerate(stats["top_letters"], start=1):
+        pct = round((freq / stats['letters_count']) * 100, 1)
+        print(f"{rank:>2}. {letter:<5} {freq:>10,} times   ({pct:>4}%)")
+
+    print("\n===========================================\n")

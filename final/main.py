@@ -9,6 +9,12 @@ import exporting_data as ed
 import file_processing as fp
 
 # --- Run all analyses and store results ---
+def get_int(prompt):
+    try:
+        return int(input(prompt))
+    except ValueError:
+        print("Please enter a valid integer.")
+        return None
 
 def run_all_analyses(data):
     """Run all analysis functions once and store their results in one dictionary."""
@@ -24,7 +30,7 @@ def run_all_analyses(data):
 def run_analysis(label, filename, data, stat_key, display_func, visual_func, all_stats):
     print(f"------{label}-------")
 
-    if data is None or filename is None:
+    if filename is None or data is None:
         print("please load a text file first (option 1). ")
         input ("press Enter to reutrn to the menu...")
         return
@@ -32,14 +38,17 @@ def run_analysis(label, filename, data, stat_key, display_func, visual_func, all
     print(F"processing {filename} ...")
     display_func(all_stats[stat_key])
     
-    print('''
-            1. Visuals
-            2. Back to menu
-    ''')
+    print("Visuals? (y/n)")
 
-    choice = get_int("Enter your choice: ")
-    if choice == 1: 
+    choice = input("Enter your choice: ").strip().lower()
+
+    # strict yes/no handling
+    if choice == 'y':
         visual_func(data)
+    elif choice == 'n':
+        return
+    else:
+        print("Invalid choice. Returning to menu...")
 
 #========================================================================================================================
 # SAVING PROCESSED DATA
@@ -56,16 +65,10 @@ def saving_stats(all_stats, filename="results.txt"):
 #========================================================================================================================
 
 
-def get_int(prompt):
-    try:
-        return int(input(prompt))
-    except ValueError:
-        print("Please enter a valid integer.")
-        return None
-
 
 
 def getting_file_selection():
+    
     print("Available text files:")
     files = [f for f in os.listdir("texts") if f.endswith(".txt")]
     i = 1
@@ -76,23 +79,32 @@ def getting_file_selection():
     file_choice = input("Enter your choice: ")
 
     if file_choice.isdigit(): 
-        file_choice -= 1
+        file_choice = int(file_choice) - 1
         if 0 <= file_choice < len(files):
+            if os.path.exists("processed_data.json"):
+                os.remove("processed_data.json")
             return os.path.join("texts", files[file_choice])
         else:
             print("Invalid selection.")
             return None
     
     else:
-        cleaned = file_choice.strip
+        cleaned = file_choice.strip()
         if not cleaned.lower().endswith(".txt"):
             cleaned = cleaned + ".txt"
 
-        if file_choice in files: 
-            return os.path.join("texts", file_choice)
+        if cleaned in files: 
+            if os.path.exists("processed_data.json"):
+                os.remove("processed_data.json")
+            return os.path.join("texts", cleaned)
         
         else:
-            print("File not found. Please try again.")
+            print(""" 
+                  ---------------------------------
+                  File not found. Please try again.
+                  ----------------------------------
+                  
+                  """)
             return None
 
 #========================================================================================================================
@@ -102,7 +114,7 @@ def getting_file_selection():
 def main():
     data = None
     filename = None
-
+    all_stats= None
     while True: #keep looping forever — until I manually tell it to stop
         print ('''
         ===============================================
@@ -125,16 +137,32 @@ def main():
         ==============================================''')
 
         if menu_choice == 1:  # load data
+            data = None
+            filename = None
+            all_stats= None
             while filename is None:
                 filename = getting_file_selection()
-                print(f"Processing {filename}...")
-                before = time.time()
-                fp.run_processing_from_main(filename)
-                data = stats.load_data()
-                all_stats = run_all_analyses(data)
-                print("File loaded successfully.")
-                measured_time = time.time() - before
-                print(f'The time it took to measure: {measured_time :.2f}')
+            print(f"""
+                  ------------------------------------------------------
+                   Processing {filename}...
+                  ------------------------------------------------------
+                  """)
+            before = time.time()
+            fp.run_processing_from_main(filename)
+            data = stats.load_data()
+            all_stats = run_all_analyses(data)
+
+            print("""
+                  ==================================================
+                             File loaded successfully.""")
+            measured_time = time.time() - before
+            print(f"""
+                          The time it took to measure: {measured_time :.2f}
+                  =================================================
+                    """)
+            data = fp.process_file(open(filename, "r", encoding="utf-8"))
+
+
 
         elif menu_choice == 2: # display basic statistics
             run_analysis(
@@ -143,9 +171,9 @@ def main():
                 data=data, 
                 stat_key="basic", 
                 display_func=stats.display_basic_statistics, 
-                visual_func=visuals.basic_statistics_visuals
+                visual_func=visuals.basic_statistics_visuals, 
+                all_stats=all_stats
             )
-
 
 
         elif menu_choice == 3: # word frequency analysis
@@ -187,6 +215,7 @@ def main():
                 continue
             print(f"saving {filename}...")
             saving_stats(data, filename="results.txt")
+
 
         else: 
             break      #break the loop

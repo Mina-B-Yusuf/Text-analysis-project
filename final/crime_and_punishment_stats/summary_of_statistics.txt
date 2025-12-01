@@ -5,6 +5,7 @@ num_characters: 921055
 avg_words_per_sentence: 13.76
 avg_chars_per_word: 4.58
 num_of_paragraph: 4028
+lix_index: 34.36
 
 === WORD STATISTICS ===
 shortest_word_length: 1
@@ -13,6 +14,7 @@ average_word_length: 4.61
 unique_word_count: 17115
 words_appearing_once: 8593
 total_words: 201063
+long_word_coun: 41415
 top_words:
   1. the - 7357 times
   2. and - 6010 times
@@ -62,8 +64,12 @@ top_letters:
 
 
 === VISUALISATIONS SAVED ===
-Basic statistics chart: basic_stats.png
-Word analysis charts: word_lengths.png, top_words.png
-Sentence analysis charts: sentence_top5.png, sentence_hist.png
-Character analysis charts: top_letters.png, character_types.png
+Basic_text_compostion.png
+character_type_disturbution.png
+word_length_disturbution.png
+top_10_most_common_words.png
+histogram_of_word_lengths.png
+sentece_length_distirbution.png
+sentence_length_histogram.png
+top_10_most_common_letters.png
 

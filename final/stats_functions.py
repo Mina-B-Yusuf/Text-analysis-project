@@ -1,18 +1,6 @@
 import json
+import numpy as np
 
-#========================================================================================================================
-# LOAD DATA
-#========================================================================================================================
-def load_data():
-    try:
-        with open("processed_data.json", "r", encoding="utf-8") as file:
-            return json.load(file)
-    except FileNotFoundError:
-        print("Error: processed_data.json not found. Load a text file first.")
-        return None
-    except json.JSONDecodeError:
-        print("Error: processed_data.json is corrupted or empty.")
-        return None
 
 #========================================================================================================================
 # BASIC STATISTICS
@@ -37,6 +25,22 @@ def basic_statistics(data):
     #---------------------- average characters per word ----------------------
     num_of_paragraph = data['paragraph_count']
 
+    #---------------------- LIX ----------------------
+    word_lengths = data["words_dic_all"]["word_lengths"]
+    long_word_count = 0
+    for L in word_lengths:
+        if L > 6:
+            long_word_count += 1
+        # total words
+
+    total_words = sum(data["words_dic_all"]["words_dic"].values())
+
+    # total sentences
+    total_sentences = len(data["sentence_lengths"])
+
+    Lix = round((total_words / total_sentences) + (long_word_count * 100 / total_words), 2)
+
+
     #---------------------- return results instead of printing ----------------------
     return {
         "num_sentences": len(data["sentence_lengths"]),
@@ -44,7 +48,8 @@ def basic_statistics(data):
         "num_characters": total_characters,
         "avg_words_per_sentence": average_words_per_sentence,
         "avg_chars_per_word": average_characters_per_word,
-        "num_of_paragraph": num_of_paragraph 
+        "num_of_paragraph": num_of_paragraph,
+        "lix_index": Lix
     }
 
 
@@ -60,7 +65,8 @@ def display_basic_statistics(stats):
         "num_characters": "Number of characters",
         "avg_words_per_sentence": "Average words per sentence",
         "avg_chars_per_word": "Average characters per word",
-        "num_of_paragraph": "Number of paragraphs"
+        "num_of_paragraph": "Number of paragraphs",
+        "lix_index": "LIX index of text"
     }
 
     for key, label in labels.items():
@@ -87,24 +93,26 @@ def word_analysis(data):
         shortest_word_length = min(word_lengths)
         longest_word_length = max(word_lengths)
         average_word_length = round(sum(word_lengths) / len(word_lengths), 2)
+        long_word_count = sum(1 for length in data["words_dic_all"]["word_lengths"] if length > 6)
     else:
         shortest_word_length = 0
         longest_word_length = 0
         average_word_length = 0
 
-    # ---------------------- convert dictionary to list ----------------------
-    # pairs will be: [ [count, word], [count, word], ... ]
+    # ---------------------- dictionary to numpy array ----------------------
     pairs = []
     for w, c in word_dic.items():
-        pairs.append([c, w])   # NOTE: count first, THEN word
+        pairs.append([c, w])     # [count, word]
 
-    # ---------------------- sort by frequency ----------------------
-    # descending order: largest count first
-    pairs.sort(reverse=True)
+    #dtype=object ---> Type of the data (integer, float, Python object, etc.)
+    pairs = np.array(pairs, dtype=object)
 
-    # ---------------------- extract top 10 words ----------------------
-    # already in format [count, word]
-    top_words = pairs[:10]
+    # sort by count (descending)
+    idx = np.argsort(pairs[:, 0].astype(int))[::-1]
+    top10 = pairs[idx][:10]
+
+    # convert a given array to an ordinary list with the same items, elements, or values
+    top10_list = top10.tolist()
 
     # ---------------------- unique words and words appearing once ----------------------
     unique_word_count = len(word_dic)
@@ -114,17 +122,16 @@ def word_analysis(data):
         if word_dic[w] == 1:
             words_appearing_once += 1
 
-    # ---------------------- return final dictionary ----------------------
     return {
-        "top_words": top_words,
+        "top_words": top10_list,
         "shortest_word_length": shortest_word_length,
         "longest_word_length": longest_word_length,
         "average_word_length": average_word_length,
         "unique_word_count": unique_word_count,
         "words_appearing_once": words_appearing_once,
-        "total_words": total_words
+        "total_words": total_words,
+       "long_word_coun": long_word_count
     }
-
 
 def display_word_analysis(stats):
     print("\n============== Word Analysis ==============\n")

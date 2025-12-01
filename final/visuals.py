@@ -1,22 +1,15 @@
 import json
-import numpy as np
+import os 
 import matplotlib.pyplot as plt
+import numpy as np
 
 
-#========================================================================================================================
-# LOAD DATA
-#========================================================================================================================
-
-def load_data():
-    with open("processed_data.json", "r", encoding="utf-8") as file:
-        data = json.load(file)
-    return data
 
 #========================================================================================================================
 # BASIC STATISTICS
 #========================================================================================================================
 
-def basic_statistics_visuals(data):
+def basic_statistics_visuals(data, foldername):
 
     # ---------------------- compute basic stats ----------------------
     num_sentences = len(data["sentence_lengths"])
@@ -28,9 +21,8 @@ def basic_statistics_visuals(data):
     num_spaces = data["characters_dic"]["spaces"]
     num_digits = data["characters_dic"]["digits"]
 
-    total_characters = num_upper + num_lower + num_punct
-
     num_paragraphs = data["paragraph_count"]
+    total_characters = num_upper + num_lower + num_punct
 
     # BAR CHART 
     labels = ["Sentences", "Words", "Characters", "Paragraphs"]
@@ -43,7 +35,9 @@ def basic_statistics_visuals(data):
     plt.xlabel("Statistic")
     plt.grid(axis="y", linestyle="--", alpha=0.5)
     plt.tight_layout()
+    plt.savefig(os.path.join(foldername, "Basic_text_compostion.png"))
     plt.show()
+    plt.close()
 
     # PIE CHART
     char_labels = ["Letters", "Digits", "Spaces", "Punctuation"]
@@ -56,14 +50,16 @@ def basic_statistics_visuals(data):
             startangle=140, explode=explode)
     plt.title("Character Type Distribution")
     plt.tight_layout()
+    plt.savefig(os.path.join(foldername, "basic_character_type_distribution.png"))
     plt.show()
+    plt.close()
 
 
 #========================================================================================================================
 # WORD ANALYSIS
 #========================================================================================================================
 
-def word_analysis_visuals(data):
+def word_analysis_visuals(data, foldername):
 
     #---------------------- getting data ----------------------------------------------
     word_dic = data["words_dic_all"]["words_dic"]
@@ -95,37 +91,52 @@ def word_analysis_visuals(data):
     plt.yticks(fontsize=12)
     plt.title("Word length distribution (Top 10)", fontsize=14, fontweight='bold')
     plt.tight_layout()
+    plt.savefig(os.path.join(foldername,"word_length_distribution.png"))
     plt.show()
+    plt.close()
 
+    
     #---------------------- Top 10 word statistics --------------------------------
     pairs = list(word_dic.items())
-    items = [[count, word] for (word, count) in pairs]
+    items = []
+    for word, count in pairs:
+        items.append([count, word])
+
     items.sort(reverse=True)
 
-    word_visual_dic = {}
+    top_words_labels = []
+    top_words_values = []
+
     for pair in items[:10]:
         frequency = pair[0]
         word = pair[1]
-        word_visual_dic[word] = frequency
+        top_words_labels.append(word)
+        top_words_values.append(frequency)
 
     plt.figure(figsize=(9, 6))
-    plt.bar(word_visual_dic.keys(), word_visual_dic.values(), color='skyblue', edgecolor='black')
+    plt.bar(top_words_labels, top_words_values, color='skyblue', edgecolor='black')
     plt.xticks(rotation=45, fontsize=12)
     plt.yticks(fontsize=12)
     plt.title("Top 10 Most Common Words", fontsize=14, fontweight='bold')
     plt.tight_layout()
+    plt.savefig(os.path.join(foldername,"top_10_most_common_words.png"))
     plt.show()
+    plt.close()
 
     
-    # HISTOGRAM 
+    #---------------------- HISTOGRAM --------------------------------
     plt.figure(figsize=(10, 6))
-    plt.hist(word_lengths, bins=20, edgecolor='black')
+    lengths = np.array(word_lengths)
+    bins = np.linspace(0, lengths.max(), 25)
+    plt.hist(lengths, bins=bins, edgecolor="black")
     plt.title("Histogram of Word Lengths", fontsize=14, fontweight='bold')
     plt.xlabel("Word Length", fontsize=12)
     plt.ylabel("Frequency", fontsize=12)
     plt.grid(axis="y", linestyle="--", alpha=0.5)
     plt.tight_layout()
+    plt.savefig(os.path.join(foldername,"histogram_of_word_lengths.png"))
     plt.show()
+    plt.close()
 
 
 
@@ -133,57 +144,52 @@ def word_analysis_visuals(data):
 # SENTENCE ANALYSIS
 #========================================================================================================================
 
-def sentence_analysis_visuals(data):
+def sentence_analysis_visuals(data, foldername):
 
     # ---------------------- sentence length distribution ----------------------
     sentence_lengths = data["sentence_lengths"]
-    length_counts = {}
+    arr = np.array(sentence_lengths)
 
-    for length in sentence_lengths:
-        if length not in length_counts:
-            length_counts[length] = 1
-        else:
-            length_counts[length] += 1
-
-    pairs = list(length_counts.items())
-    items = [[count, length] for (length, count) in pairs]
-    items.sort(reverse=True)
-
-    sentence_lengths_visualisation = {}
-    shown = 0
-    for pair in items:
-        freq = pair[0]
-        length = pair[1]
-        sentence_lengths_visualisation[length] = freq
-        shown += 1
-        if shown == 5:
-            break
+    # ---- Histogram bins with numpy ----
+    bins = np.arange(0, arr.max() + 5, 5)
 
     # ---------------------- bar chart (top 5 sentence lengths) ----------------------
+    unique, counts = np.unique(arr, return_counts=True)
+    combined = np.column_stack((counts, unique))   # [ [freq, length], ... ]
+    idx = np.argsort(combined[:, 0])[::-1]         # sort by freq, descending
+    top5 = combined[idx][:5]
+
+    top5_dict = {}
+    for freq, length in top5:
+        top5_dict[int(length)] = int(freq)
+
     plt.figure(figsize=(9, 6))
-    plt.bar(sentence_lengths_visualisation.keys(),
-            sentence_lengths_visualisation.values(),
-            edgecolor='black')
-    plt.xticks(rotation=45)
-    plt.title("Sentence Length Distribution (Top 5)")
+    plt.bar(top5_dict.keys(), top5_dict.values(), edgecolor="black")
+    plt.title("Top 5 Most Common Sentence Lengths")
+    plt.xlabel("Sentence length (words)")
+    plt.ylabel("Frequency")
     plt.tight_layout()
+    plt.savefig(os.path.join(foldername, "sentence_length_distribution.png"))
     plt.show()
+    plt.close()
 
     # ---------------------- histogram of all sentence lengths ----------------------
     plt.figure(figsize=(9, 6))
-    plt.hist(sentence_lengths, bins=30, edgecolor="black")
+    plt.hist(arr, bins=bins, edgecolor="black")
     plt.title("Sentence Length Histogram")
     plt.xlabel("Sentence length (words)")
     plt.ylabel("Frequency")
     plt.tight_layout()
+    plt.savefig(os.path.join(foldername, "sentence_length_histogram.png"))
     plt.show()
+    plt.close()
 
     
 
 #========================================================================================================================
 # CHARACTER ANALYSIS
 #========================================================================================================================
-def character_analysis_visuals(data):
+def character_analysis_visuals(data, foldername):
 
     # ---------------------- merge uppercase + lowercase ----------------------
     letters_upper = data["characters_dic"]["letters"]["uppercase"]
@@ -225,16 +231,18 @@ def character_analysis_visuals(data):
     plt.xticks(rotation=45)
     plt.title("Top 10 Most Common Letters")
     plt.tight_layout()
+    plt.savefig(os.path.join(foldername, "top_10_most_common_letters.png"))
     plt.show()
+    plt.close()
 
     # --- Character types (pie chart) ---
     plt.figure(figsize=(8, 6))
-    plt.pie(
-        type_distribution.values(),
-        labels=type_distribution.keys(),
-        autopct="%1.1f%%"
-    )
+    vals = np.array(list(type_distribution.values()))
+    labels = list(type_distribution.keys())
+    plt.pie(vals, labels=labels, autopct="%1.1f%%")
     plt.title("Character Type Distribution")
     plt.tight_layout()
+    plt.savefig(os.path.join(foldername, "character_type_distribution.png"))
     plt.show()
+    plt.close()
  

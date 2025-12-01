@@ -1,3 +1,5 @@
+import os
+
 def export_simple_fields(stats, file_object, skip_keys):
     for key, value in stats.items():
         if key not in skip_keys:
@@ -29,10 +31,26 @@ def export_top_letters(top_letters, file_object):
         file_object.write(f"  {rank}. {letter} - {freq} times\n")
     file_object.write("\n")
 
+
+def create_export_folder(text_filename):
+    name = os.path.basename(text_filename)
+    name_no_ext = os.path.splitext(name)[0]
+    safe = name_no_ext.replace(" ", "_")
+
+    foldername = f"{safe}_stats"
+
+    if not os.path.exists(foldername):
+        os.makedirs(foldername)
+
+    return foldername
+
 # ================================================================
-def export_results(all_stats, filename="results.txt"):
+def export_results(all_stats, foldername):
+
+    filepath = os.path.join(foldername, "summary_of_statistics.txt")
+
     try:
-        with open(filename, "w", encoding="utf-8") as file:
+        with open(filepath, "w", encoding="utf-8") as file:
 
             # BASIC STATISTICS
             file.write("=== BASIC STATISTICS ===\n")
@@ -55,6 +73,18 @@ def export_results(all_stats, filename="results.txt"):
             file.write("=== CHARACTER STATISTICS ===\n")
             export_simple_fields(all_stats["character"], file, skip_keys=["top_letters"])
             export_top_letters(all_stats["character"]["top_letters"], file)
+            file.write("\n")
+
+            # VISUALISATION FILE SUMMARY
+            file.write("=== VISUALISATIONS SAVED ===\n")
+            file.write("Basic_text_compostion.png\n")
+            file.write("character_type_disturbution.png\n")
+            file.write("word_length_disturbution.png\n")
+            file.write("top_10_most_common_words.png\n")
+            file.write("histogram_of_word_lengths.png\n")
+            file.write("sentece_length_distirbution.png\n")
+            file.write("sentence_length_histogram.png\n")
+            file.write("top_10_most_common_letters.png\n")
             file.write("\n")
 
         print("Export completed.")

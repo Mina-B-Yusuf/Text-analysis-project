@@ -17,7 +17,6 @@ def get_int(prompt):
         return None
 
 def run_all_analyses(data):
-    """Run all analysis functions once and store their results in one dictionary."""
     all_stats = {
         "basic": stats.basic_statistics(data),
         "word": stats.word_analysis(data),
@@ -27,7 +26,7 @@ def run_all_analyses(data):
     return all_stats
 
 
-def run_analysis(label, filename, data, stat_key, display_func, visual_func, all_stats):
+def run_analysis(label, filename, data, stat_key, display_func, visual_func, all_stats, foldername):
     print(f"------{label}-------")
 
     if filename is None or data is None:
@@ -44,28 +43,16 @@ def run_analysis(label, filename, data, stat_key, display_func, visual_func, all
 
     # strict yes/no handling
     if choice == 'y':
-        visual_func(data)
+        visual_func(data, foldername)
     elif choice == 'n':
         return
     else:
         print("Invalid choice. Returning to menu...")
 
-#========================================================================================================================
-# SAVING PROCESSED DATA
-#========================================================================================================================
-
-def saving_stats(all_stats, filename="results.txt"):
-    with open("results.json", "w", encoding="utf-8") as json_file:
-        json.dump(all_stats, json_file, indent=4, ensure_ascii=False)
-
-    print(f"Processing complete. Results saved to results.json from {filename}")
 
 #========================================================================================================================
 # INPUT HANDELING
 #========================================================================================================================
-
-
-
 
 def getting_file_selection():
     
@@ -148,9 +135,11 @@ def main():
                   ------------------------------------------------------
                   """)
             before = time.time()
-            fp.run_processing_from_main(filename)
-            data = stats.load_data()
+            data = fp.run_processing_from_main(filename)
+
             all_stats = run_all_analyses(data)
+
+            foldername = ed.create_export_folder(filename)
 
             print("""
                   ==================================================
@@ -160,8 +149,6 @@ def main():
                           The time it took to measure: {measured_time :.2f}
                   =================================================
                     """)
-            data = fp.process_file(open(filename, "r", encoding="utf-8"))
-
 
 
         elif menu_choice == 2: # display basic statistics
@@ -172,7 +159,8 @@ def main():
                 stat_key="basic", 
                 display_func=stats.display_basic_statistics, 
                 visual_func=visuals.basic_statistics_visuals, 
-                all_stats=all_stats
+                all_stats=all_stats,
+                foldername=foldername
             )
 
 
@@ -184,7 +172,8 @@ def main():
                 stat_key="word", 
                 display_func=stats.display_word_analysis, 
                 visual_func=visuals.word_analysis_visuals,
-                all_stats=all_stats
+                all_stats=all_stats,
+                foldername=foldername
             )
 
 
@@ -196,7 +185,8 @@ def main():
                 stat_key="sentence", 
                 display_func=stats.display_sentence_analysis, 
                 visual_func=visuals.sentence_analysis_visuals,
-                all_stats=all_stats
+                all_stats=all_stats,
+                foldername=foldername
             )
 
         elif menu_choice == 5:
@@ -207,7 +197,8 @@ def main():
                 stat_key="character", 
                 display_func=stats.display_character_analysis, 
                 visual_func=visuals.character_analysis_visuals,
-                all_stats=all_stats
+                all_stats=all_stats,
+                foldername=foldername
             )
 
 
@@ -218,7 +209,11 @@ def main():
                 continue
 
             print("Saving results...")
-            ed.export_results(all_stats, "results.txt")
+            visuals.basic_statistics_visuals(data, foldername)
+            visuals.word_analysis_visuals(data, foldername)
+            visuals.sentence_analysis_visuals(data, foldername)
+            visuals.character_analysis_visuals(data, foldername)
+            ed.export_results(all_stats, foldername)
 
 
         else: 

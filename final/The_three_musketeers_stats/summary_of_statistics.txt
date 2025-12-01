@@ -1,0 +1,75 @@
+=== BASIC STATISTICS ===
+num_sentences: 15173
+num_words: 226941
+num_characters: 1044701
+avg_words_per_sentence: 14.96
+avg_chars_per_word: 4.6
+num_of_paragraph: 8250
+lix_index: 36.58
+
+=== WORD STATISTICS ===
+shortest_word_length: 1
+longest_word_length: 26
+average_word_length: 4.65
+unique_word_count: 17968
+words_appearing_once: 8688
+total_words: 226941
+long_word_coun: 49077
+top_words:
+  1. the - 12513 times
+  2. to - 6484 times
+  3. of - 6332 times
+  4. and - 5183 times
+  5. a - 4514 times
+  6. in - 3095 times
+  7. that - 2911 times
+  8. his - 2879 times
+  9. you - 2593 times
+  10. was - 2409 times
+
+
+=== SENTENCE STATISTICS ===
+num_sentences: 15173
+avg_words_per_sentence: 15.54
+shortest_sentence_text: Chapter VII.
+longest_sentence_text: ” “Your Eminence is right,” replied Milady; “and I have been wrong in seeing in the mission with which you honor me anything but that which it really is—that is, to announce to his Grace, on the part of your Eminence, that you are acquainted with the different disguises by means of which he succeeded in approaching the queen during the fête given by Madame the Constable; that you have proofs of the interview granted at the Louvre by the queen to a certain Italian astrologer who was no other than the Duke of Buckingham; that you have ordered a little romance of a satirical nature to be written upon the adventures of Amiens, with a plan of the gardens in which those adventures took place, and portraits of the actors who figured in them; that Montague is in the Bastille, and that the torture may make him say things he remembers, and even things he has forgotten; that you possess a certain letter from Madame de Chevreuse, found in his Grace’s lodging, which singularly compromises not only her who wrote it, but her in whose name it was written.
+shortest_sentence_length: 2
+longest_sentence_length: 190
+paragraph_count: 8250
+length_distribution:
+  3 words : 1118 sentences
+  4 words : 838 sentences
+  5 words : 798 sentences
+  7 words : 779 sentences
+  6 words : 746 sentences
+
+
+=== CHARACTER STATISTICS ===
+letters_count: 1003635
+digits: 196
+spaces: 220551
+punctuation: 41066
+total_characters: 1265448
+top_letters:
+  1. e - 124901 times
+  2. t - 91003 times
+  3. a - 84673 times
+  4. o - 76236 times
+  5. i - 69450 times
+  6. n - 67775 times
+  7. h - 65388 times
+  8. s - 61627 times
+  9. r - 58588 times
+  10. d - 46897 times
+
+
+=== VISUALISATIONS SAVED ===
+Basic_text_compostion.png
+character_type_disturbution.png
+word_length_disturbution.png
+top_10_most_common_words.png
+histogram_of_word_lengths.png
+sentece_length_distirbution.png
+sentence_length_histogram.png
+top_10_most_common_letters.png
+

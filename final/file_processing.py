@@ -55,7 +55,7 @@ def word_var_function(words, data):
         if len(word) == 1 and word not in ("a", "i"):
             continue
 
-        # --- Skip junk words that are mostly punctuation ---
+        # --- Skip junk words that are mostly punctuation ---            #why do we need this 
         if all(ch in ".,!?;:-—()[]\"'" for ch in word):
             continue
 

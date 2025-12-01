@@ -52,7 +52,7 @@ def saving_stats(all_stats, filename="results.txt"):
     print(f"Processing complete. Results saved to results.json from {filename}")
 
 #========================================================================================================================
-# ROBUST INPUT HANDELING
+# INPUT HANDELING
 #========================================================================================================================
 
 
@@ -63,6 +63,37 @@ def get_int(prompt):
         print("Please enter a valid integer.")
         return None
 
+
+
+def getting_file_selection():
+    print("Available text files:")
+    files = [f for f in os.listdir("texts") if f.endswith(".txt")]
+    i = 1
+    for file in files:
+        print(f"{i}. {file}")
+        i += 1
+
+    file_choice = input("Enter your choice: ")
+
+    if file_choice.isdigit(): 
+        file_choice -= 1
+        if 0 <= file_choice < len(files):
+            return os.path.join("texts", files[file_choice])
+        else:
+            print("Invalid selection.")
+            return None
+    
+    else:
+        cleaned = file_choice.strip
+        if not cleaned.lower().endswith(".txt"):
+            cleaned = cleaned + ".txt"
+
+        if file_choice in files: 
+            return os.path.join("texts", file_choice)
+        
+        else:
+            print("File not found. Please try again.")
+            return None
 
 #========================================================================================================================
 # Menu
@@ -94,19 +125,8 @@ def main():
         ==============================================''')
 
         if menu_choice == 1:  # load data
-            print("Available text files:")
-            files = [f for f in os.listdir("texts") if f.endswith(".txt")]
-            i = 1
-            for file in files:
-                print(f"{i}. {file}")
-                i += 1
-
-            file_choice = get_int("Enter your choice: ") -1
-            if file_choice is None:
-                continue
-
-            if 0 <= file_choice < len(files):
-                filename = os.path.join("texts", files[file_choice])
+            while filename is None:
+                filename = getting_file_selection()
                 print(f"Processing {filename}...")
                 before = time.time()
                 fp.run_processing_from_main(filename)
@@ -115,10 +135,6 @@ def main():
                 print("File loaded successfully.")
                 measured_time = time.time() - before
                 print(f'The time it took to measure: {measured_time :.2f}')
-            else:
-                print("Invalid selection.")
-                continue
-
 
         elif menu_choice == 2: # display basic statistics
             run_analysis(

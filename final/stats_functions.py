@@ -27,12 +27,8 @@ def basic_statistics(data):
 
     #---------------------- LIX ----------------------
     word_lengths = data["words_dic_all"]["word_lengths"]
-    long_word_count = 0
-    for L in word_lengths:
-        if L > 6:
-            long_word_count += 1
-        # total words
-
+    word_lengths = np.array(data["words_dic_all"]["word_lengths"])
+    long_word_count = np.sum(word_lengths > 6)
     total_words = sum(data["words_dic_all"]["words_dic"].values())
 
     # total sentences

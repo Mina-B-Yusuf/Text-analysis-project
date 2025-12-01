@@ -1,11 +1,8 @@
 import os
-import json
 import time
-
 import stats_functions as stats
 import visuals
 import exporting_data as ed
-
 import file_processing as fp
 
 # --- Run all analyses and store results ---
@@ -49,6 +46,25 @@ def run_analysis(label, filename, data, stat_key, display_func, visual_func, all
     else:
         print("Invalid choice. Returning to menu...")
 
+def check_script_directory():
+    # Actual folder where main.py lives
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+
+    # Folder user is running from
+    cwd = os.getcwd()
+
+    if os.path.normpath(cwd) != os.path.normpath(script_dir):
+        print("\n[ERROR] You are running the program from the WRONG directory.")
+        print(f" - Current working directory: {cwd}")
+        print(f" - main.py location:         {script_dir}\n")
+        print("Fix: Navigate to the folder where main.py is located before running it.")
+        print("Example:")
+        print(f"   cd \"{script_dir}\"")
+        print("Then run:")
+        print("   python3 main.py\n")
+        return False
+
+    return True
 
 #========================================================================================================================
 # INPUT HANDELING
@@ -99,6 +115,7 @@ def getting_file_selection():
 #========================================================================================================================
 
 def main():
+    check_script_directory()
     data = None
     filename = None
     all_stats= None

@@ -44,16 +44,12 @@ def basic_statistics(data):
     }
 
 def display_basic_statistics(stats):
-    """Display the computed statistics in a formatted way."""
     print("---- Basic Statistics ----")
-    print(f"{'Number of sentences:':35} {stats['num_sentences']}")
-    print(f"{'Number of words:':35} {stats['num_words']:,}")
-    print(f"{'Number of characters:':35} {stats['num_characters']:,}")
-    print(f"{'Average words per sentence:':35} {stats['avg_words_per_sentence']:.2f}")
-    print(f"{'Average characters per word:':35} {stats['avg_chars_per_word']:.2f}")
-    print(f"{'Number of paragraphs:':35} {stats["num_of_paragraph"]:.2f}")
-
-
+    for label, value in stats.items():
+        if isinstance(value, float):
+            print(f"{label:35} {value:.2f}")
+        else:
+            print(f"{label:35} {value}")
 
 #========================================================================================================================
 # WORD ANALYSIS

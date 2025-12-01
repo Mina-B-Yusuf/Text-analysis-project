@@ -1,24 +1,45 @@
-from stats_functions import load_data, basic_statistics, word_analysis, sentence_analysis, character_analysis, display_basic_statistics, display_word_analysis,display_sentence_analysis, display_character_analysis
-from visuals import basic_statistics_visuals, word_analysis_visuals, sentence_analysis_visuals, character_analysis_visuals
-import stats_functions as sf
-
-from file_processing import run_processing_from_main
 import os
 import json
+import time
 
-#========================================================================================================================
-# PROCESSING DATA
-#========================================================================================================================
+import stats_functions as stats
+import visuals
+import exporting_data as ed
+
+import file_processing as fp
+
+# --- Run all analyses and store results ---
 
 def run_all_analyses(data):
     """Run all analysis functions once and store their results in one dictionary."""
     all_stats = {
-        "basic": basic_statistics(data),
-        "word": word_analysis(data),
-        "sentence": sentence_analysis(data),
-        "character": character_analysis(data)
+        "basic": stats.basic_statistics(data),
+        "word": stats.word_analysis(data),
+        "sentence": stats.sentence_analysis(data),
+        "character": stats.character_analysis(data)
     }
     return all_stats
+
+
+def run_analysis(label, filename, data, stat_key, display_func, visual_func, all_stats):
+    print(f"------{label}-------")
+
+    if data is None or filename is None:
+        print("please load a text file first (option 1). ")
+        input ("press Enter to reutrn to the menu...")
+        return
+    
+    print(F"processing {filename} ...")
+    display_func(all_stats[stat_key])
+    
+    print('''
+            1. Visuals
+            2. Back to menu
+    ''')
+
+    choice = get_int("Enter your choice: ")
+    if choice == 1: 
+        visual_func(data)
 
 #========================================================================================================================
 # SAVING PROCESSED DATA
@@ -87,86 +108,60 @@ def main():
             if 0 <= file_choice < len(files):
                 filename = os.path.join("texts", files[file_choice])
                 print(f"Processing {filename}...")
-                run_processing_from_main(filename)
-                data = load_data()
+                before = time.time()
+                fp.run_processing_from_main(filename)
+                data = stats.load_data()
                 all_stats = run_all_analyses(data)
                 print("File loaded successfully.")
+                measured_time = time.time() - before
+                print(f'The time it took to measure: {measured_time :.2f}')
             else:
                 print("Invalid selection.")
                 continue
 
 
         elif menu_choice == 2: # display basic statistics
-            print("--------- Basic Statistics---------")
-            if 'filename' not in locals() or data is None:
-                print("Please load a text file first (option 1).")
-                input("Press Enter to return to the menu...")
-                continue
-            print(f"Processing {filename}...")
-            display_basic_statistics(all_stats["basic"])
-            print()
-            print('''
-                1. Visuals for Basics Statistics
-                2. Back to menu''')
-            
-            choice = int(input('Enter your choice: '))
-            if choice == 1:
-                basic_statistics_visuals(data)
-            continue 
+            run_analysis(
+                label= "Basic Statistics", 
+                filename=filename, 
+                data=data, 
+                stat_key="basic", 
+                display_func=stats.display_basic_statistics, 
+                visual_func=visuals.basic_statistics_visuals
+            )
 
 
 
         elif menu_choice == 3: # word frequency analysis
-            print ("--------- Word Analysis ---------")
-            if 'filename' not in locals() or data is None:
-                print("Please load a text file first (option 1).")
-                input("Press Enter to return to the menu...")
-                continue
-            print(f"Processing {filename}...")
-            display_word_analysis(all_stats["word"])
-            print('''
-                1. Visuals for Word Analysis
-                2. Back to menu''')
-            choice = int(input('Enter your choice: '))
-            if choice == 1:
-                word_analysis_visuals(data)
-            continue
+            run_analysis(
+                label= "Word Analysis", 
+                filename=filename, 
+                data=data, 
+                stat_key="word", 
+                display_func=stats.display_word_analysis, 
+                visual_func=visuals.word_analysis_visuals
+            )
 
 
         elif menu_choice == 4:
-            print ("--------- Sentence Analysis ---------")
-            if 'filename' not in locals() or data is None:
-                print("Please load a text file first (option 1).")
-                input("Press Enter to return to the menu...")
-                continue
-            print(f"Processing {filename}...")
-            display_sentence_analysis(all_stats["sentence"])
-            print()
-            print('''
-                1. Visuals for Sentence analysis
-                2. Back to menu''')
-            choice = int(input('Enter your choice: '))
-            if choice == 1:
-                sentence_analysis_visuals(data)
-            continue 
-
+            run_analysis(
+                label= "Sentence Analysis", 
+                filename=filename, 
+                data=data, 
+                stat_key="sentence", 
+                display_func=stats.display_sentence_analysis, 
+                visual_func=visuals.sentence_analysis_visuals
+            )
 
         elif menu_choice == 5:
-            print ("--------- Character Analysis ---------")
-            if 'filename' not in locals() or data is None:
-                print("Please load a text file first (option 1).")
-                input("Press Enter to return to the menu...")
-                continue
-            print(f"Processing {filename}...")
-            display_character_analysis(all_stats["character"])
-            print()
-            print('''
-        1. Visuals for character analysis
-        2. Back to menu''')
-            choice = int(input('Enter your choice: '))
-            if choice == 1:
-                character_analysis_visuals(data)
-            continue
+            run_analysis(
+                label= "Character Analysis", 
+                filename=filename, 
+                data=data, 
+                stat_key="character", 
+                display_func=stats.display_character_analysis, 
+                visual_func=visuals.character_analysis_visuals
+            )
 
 
         elif menu_choice == 6:

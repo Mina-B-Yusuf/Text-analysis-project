@@ -209,12 +209,13 @@ def main():
 
 
         elif menu_choice == 6:
-            if 'filename' not in locals() or data is None:
+            if data is None:
                 print("Please load a text file first (option 1).")
                 input("Press Enter to return to the menu...")
                 continue
-            print(f"saving {filename}...")
-            saving_stats(data, filename="results.txt")
+
+            print("Saving results...")
+            ed.export_results(all_stats, "results.txt")
 
 
         else: 

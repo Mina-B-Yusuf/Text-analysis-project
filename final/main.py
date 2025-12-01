@@ -18,7 +18,8 @@ def run_all_analyses(data):
         "basic": stats.basic_statistics(data),
         "word": stats.word_analysis(data),
         "sentence": stats.sentence_analysis(data),
-        "character": stats.character_analysis(data)
+        "character": stats.character_analysis(data),
+        "lix": stats.LIX(data)
     }
     return all_stats
 
@@ -117,10 +118,12 @@ def getting_file_selection():
 #========================================================================================================================
 
 def main():
+    if not check_script_directory():
+        return
     data = None
     filename = None
     all_stats= None
-    while True and check_script_directory(): #keep looping forever — until I manually tell it to stop
+    while True: #keep looping forever — until I manually tell it to stop
         print ('''
         ===============================================
                     ------- Menu -------
@@ -180,6 +183,7 @@ def main():
                 all_stats=all_stats,
                 foldername=foldername
             )
+            stats.display_lix(all_stats["lix"])
 
 
         elif menu_choice == 3: # word frequency analysis

@@ -1,4 +1,3 @@
-import json
 import numpy as np
 
 
@@ -25,17 +24,6 @@ def basic_statistics(data):
     #---------------------- average characters per word ----------------------
     num_of_paragraph = data['paragraph_count']
 
-    #---------------------- LIX ----------------------
-    word_lengths = data["words_dic_all"]["word_lengths"]
-    word_lengths = np.array(data["words_dic_all"]["word_lengths"])
-    long_word_count = np.sum(word_lengths > 6)
-    total_words = sum(data["words_dic_all"]["words_dic"].values())
-
-    # total sentences
-    total_sentences = len(data["sentence_lengths"])
-
-    Lix = round((total_words / total_sentences) + (long_word_count * 100 / total_words), 2)
-
 
     #---------------------- return results instead of printing ----------------------
     return {
@@ -45,11 +33,34 @@ def basic_statistics(data):
         "avg_words_per_sentence": average_words_per_sentence,
         "avg_chars_per_word": average_characters_per_word,
         "num_of_paragraph": num_of_paragraph,
-        "lix_index": Lix
     }
 
 
 
+def LIX(data):
+    word_lengths = np.array(data["words_dic_all"]["word_lengths"])
+
+    # long word 
+    long_word_count = np.sum(word_lengths > 6)
+
+    total_words = sum(data["words_dic_all"]["words_dic"].values())
+    total_sentences = len(data["sentence_lengths"])
+
+    Lix = round((total_words / total_sentences) + (long_word_count * 100 / total_words), 2)
+
+    if Lix <= 24:
+        difficulty = "very easy"
+    elif 25 <= Lix <= 34:
+        difficulty = "easy"
+    elif 35 <= Lix <= 44:
+        difficulty = "standard"
+    elif 45 <= Lix <= 54:
+        difficulty = "difficult"
+    else:   # Lix >= 55
+        difficulty = "very difficult"
+
+    return {"Lix_index": Lix, 
+            "difficulty": difficulty}
 
 
 def display_basic_statistics(stats):
@@ -62,7 +73,6 @@ def display_basic_statistics(stats):
         "avg_words_per_sentence": "Average words per sentence",
         "avg_chars_per_word": "Average characters per word",
         "num_of_paragraph": "Number of paragraphs",
-        "lix_index": "LIX index of text"
     }
 
     for key, label in labels.items():
@@ -72,6 +82,13 @@ def display_basic_statistics(stats):
         else:
             print(f"{label:<30} : {value:,}")
 
+    print("\n======================================\n")
+
+def display_lix(stats):
+    print("\n======================================\n")
+    print("---------further statistics-----------")
+    print(f"The LIX index is: {stats["Lix_index"]}")
+    print(f"Readability level: {stats["difficulty"]}")
     print("\n======================================\n")
 
 #========================================================================================================================

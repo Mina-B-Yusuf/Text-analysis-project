@@ -95,7 +95,7 @@ def is_valid_sentence(sentence, words, abbreviations): #Returns True if this sen
         return False
     if sentence.strip() in ['"', '”', '“', "’", "‘"]: #skipping quoates  
         return False
-    if sentence.strip().startswith(("“", '"')) and len(words) <= 2: 
+    if sentence.strip().startswith(("“", '"')) and len(words) <= 2:      # why do we need this
         return False
 
     last_word = words[-1].lower() 

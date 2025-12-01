@@ -1,1 +1,12 @@
----- Basic Statistics ----
+========== BASIC STATISTICS ==========
+Number of sentences          : 14614
+Number of words              : 204527
+Number of characters         : 921055
+Average words per sentence   : 14.00
+Average characters per word  : 4.50
+Number of paragraphs         : 4028
+
+
+============== WORD ANALYSIS ==============
+Top 10 Most Common Words:
+-------------------------------------------

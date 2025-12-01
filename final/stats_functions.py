@@ -100,20 +100,11 @@ def word_analysis(data):
 
     # ---------------------- sort by frequency (bubble sort) ----------------------
     # descending order: largest count first
-    for i in range(len(pairs)):
-        for j in range(i + 1, len(pairs)):
-            if pairs[j][1] > pairs[i][1]:
-                temp = pairs[i]
-                pairs[i] = pairs[j]
-                pairs[j] = temp
+    pairs.sort(reverse=True) 
 
     # ---------------------- extract top 10 words ----------------------
     # convert into the format [count, word]
-    top_words = []
-    for elem in pairs[:10]:
-        word = elem[0]
-        count = elem[1]
-        top_words.append([count, word])
+    top_words = pairs[:10]
 
     # ---------------------- unique words and words appearing once ----------------------
     unique_word_count = len(word_dic)

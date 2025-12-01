@@ -54,14 +54,16 @@ def check_script_directory():
     cwd = os.getcwd()
 
     if os.path.normpath(cwd) != os.path.normpath(script_dir):
-        print("\n[ERROR] You are running the program from the WRONG directory.")
-        print(f" - Current working directory: {cwd}")
-        print(f" - main.py location:         {script_dir}\n")
-        print("Fix: Navigate to the folder where main.py is located before running it.")
-        print("Example:")
-        print(f"   cd \"{script_dir}\"")
-        print("Then run:")
-        print("   python3 main.py\n")
+        print(f"""\n 
+                                OOOOoooopsies
+        You are running the program from the WRONG directory.
+         - Current working directory: {cwd}
+         - main.py location:         {script_dir}\n
+        Fix: Navigate to the folder where main.py is located before running it.
+                Example:
+                cd \"{script_dir}\"
+                        Then run""")
+
         return False
 
     return True
@@ -115,11 +117,10 @@ def getting_file_selection():
 #========================================================================================================================
 
 def main():
-    check_script_directory()
     data = None
     filename = None
     all_stats= None
-    while True: #keep looping forever — until I manually tell it to stop
+    while True and check_script_directory(): #keep looping forever — until I manually tell it to stop
         print ('''
         ===============================================
                     ------- Menu -------

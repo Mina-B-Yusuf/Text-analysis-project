@@ -49,6 +49,27 @@ def run_analysis(label, filename, data, stat_key, display_func, visual_func, all
     else:
         print("Invalid choice. Returning to menu...")
 
+def check_script_directory():
+    # Actual folder where main.py lives
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+
+    # Folder user is running from
+    cwd = os.getcwd()
+
+    if os.path.normpath(cwd) != os.path.normpath(script_dir):
+        print(f"""\n 
+                                OOOOoooopsies
+        You are running the program from the WRONG directory.
+         - Current working directory: {cwd}
+         - main.py location:         {script_dir}\n
+        Fix: Navigate to the folder where main.py is located before running it.
+                Example:
+                cd \"{script_dir}\"
+                        Then run""")
+
+        return False
+
+    return True
 
 #========================================================================================================================
 # INPUT HANDELING
@@ -94,39 +115,13 @@ def getting_file_selection():
                   """)
             return None
 
-
-
-
-def check_script_directory():
-    # Actual folder where main.py lives
-    script_dir = os.path.dirname(os.path.abspath(__file__))
-
-    # Folder user is running from
-    cwd = os.getcwd()
-
-    if os.path.normpath(cwd) != os.path.normpath(script_dir):
-        print(f"""\n 
-                                OOOOoooopsies
-        You are running the program from the WRONG directory.
-         - Current working directory: {cwd}
-         - main.py location:         {script_dir}\n
-        Fix: Navigate to the folder where main.py is located before running it.
-                Example:
-                cd \"{script_dir}\"
-                        Then run""")
-
-        return False
-
-    return True
 #========================================================================================================================
 # Menu
 #========================================================================================================================
 
 def main():
-
     if not check_script_directory():
         return
-
     data = None
     filename = None
     all_stats= None

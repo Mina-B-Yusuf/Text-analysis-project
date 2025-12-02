@@ -4,6 +4,7 @@ import stats_functions as stats
 import visuals
 import exporting_data as ed
 import file_processing as fp
+import cefr as cefr
 
 # --- Run all analyses and store results ---
 def get_int(prompt):
@@ -184,6 +185,8 @@ def main():
                 foldername=foldername
             )
             stats.display_lix(all_stats["lix"])
+            cefr.running_cefr_excelsheet()
+            cefr.display_cefr_stats()
 
 
         elif menu_choice == 3: # word frequency analysis

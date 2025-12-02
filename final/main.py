@@ -2,6 +2,7 @@ import os
 import time
 import stats_functions as stats
 import visuals
+
 import exporting_data as ed
 import file_processing as fp
 import cefr as cefr
@@ -185,8 +186,11 @@ def main():
                 foldername=foldername
             )
             stats.display_lix(all_stats["lix"])
-            cefr.running_cefr_excelsheet()
-            cefr.display_cefr_stats()
+    
+            cefr_dict = cefr.load_cefr_json(json_path="cefr_words.json")
+            level_count = cefr.cefr_levels(data, cefr_dict)
+            cefr.display_cefr_stats(level_count)
+    
 
 
         elif menu_choice == 3: # word frequency analysis

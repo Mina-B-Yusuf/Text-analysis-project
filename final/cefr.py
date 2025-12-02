@@ -23,7 +23,73 @@ def load_cefr_dictionary(filepath):
 
     return cefr_dict
 
-def cefr_levels(words_dic, cefr_dict):
+
+def create_verb_dictionary(excel_path, output_json):
+    # Load Excel file
+    df = pd.read_excel(excel_path)
+
+    # Skip header row if needed — adjust based on your sheet layout
+    df = df.iloc[1:, :]
+
+    verb_dict = {}
+
+    for _, row in df.iterrows():
+        base = str(row[0]).strip().lower()
+
+        if base == "" or base == "nan":
+            continue
+
+        variants = set()
+
+        # Gather all forms in all columns
+        for col in row.index:
+            val = str(row[col]).strip().lower()
+            if val != "" and val != "nan":
+                variants.add(val)
+
+        # Always include base form
+        variants.add(base)
+
+        # Convert set → sorted list
+        verb_dict[base] = sorted(variants)
+
+    # Save dictionary to JSON file
+    with open(output_json, "w", encoding="utf-8") as f:
+        json.dump(verb_dict, f, ensure_ascii=False, indent=4)
+
+    print(f"Verb dictionary created successfully and saved as {output_json}.")
+
+
+# Run it directly
+if __name__ == "__main__":
+    create_verb_dictionary(
+        excel_path="Verbs.xlsx",   # change if needed
+        output_json="verb_forms.json"
+    )
+
+
+
+
+
+def load_cefr_json(json_path="cefr_words.json"):
+    with open(json_path, "r", encoding="utf-8") as f:
+        cefr_dict = json.load(f)
+    return cefr_dict
+
+
+def cefr_levels(data, cefr_dict, reverse_verb_dict):
+    normalized_dict = {}
+
+    for word, freq in word_dic.items():
+        w = word.lower()
+
+        if w in reverse_verb_dict:      # it’s a verb form
+            base = reverse_verb_dict[w]
+        else:
+            base = w
+
+        # accumulate counts
+        normalized_dict[base] = normalized_dict.get(base, 0) + freq
 
     level_count = {
         "A1":0, 
@@ -35,7 +101,7 @@ def cefr_levels(words_dic, cefr_dict):
         "others": 0
     }
 
-    for word, freq in words_dic.items():
+    for word, freq in data["words_dic_all"]["words_dic"].items():
         word_clean = word.lower()
 
         if word_clean in cefr_dict:

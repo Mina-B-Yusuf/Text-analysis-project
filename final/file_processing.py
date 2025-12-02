@@ -66,6 +66,7 @@ def word_var_function(words, data):
             else:
                 clean_chars.append(" ")
         word = "".join(clean_chars)
+        word = word.strip()
 
         if not word:
             continue

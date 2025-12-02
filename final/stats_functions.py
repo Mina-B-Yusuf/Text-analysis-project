@@ -1,4 +1,3 @@
-import numpy as np
 
 
 #========================================================================================================================
@@ -38,25 +37,29 @@ def basic_statistics(data):
 
 
 def LIX(data):
-    word_lengths = np.array(data["words_dic_all"]["word_lengths"])
+    word_lengths = data["words_dic_all"]["word_lengths"]
 
-    # long word 
-    long_word_count = np.sum(word_lengths > 6)
+    # long words = words with more than 6 characters
+    long_word_count = sum(1 for w in word_lengths if w > 6)
 
     total_words = sum(data["words_dic_all"]["words_dic"].values())
     total_sentences = len(data["sentence_lengths"])
 
+    if total_sentences == 0 or total_words == 0:
+        return 0, "undefined"   # avoid division by zero
+
     Lix = round((total_words / total_sentences) + (long_word_count * 100 / total_words), 2)
 
+    # difficulty classification
     if Lix <= 24:
         difficulty = "very easy"
-    elif 25 <= Lix <= 34:
+    elif 24 < Lix <= 33:
         difficulty = "easy"
-    elif 35 <= Lix <= 44:
+    elif 33 < Lix <= 43:
         difficulty = "standard"
-    elif 45 <= Lix <= 54:
+    elif 43 < Lix <= 54:
         difficulty = "difficult"
-    else:   # Lix >= 55
+    else:
         difficulty = "very difficult"
 
     return {"Lix_index": Lix, 
@@ -106,34 +109,29 @@ def word_analysis(data):
         shortest_word_length = min(word_lengths)
         longest_word_length = max(word_lengths)
         average_word_length = round(sum(word_lengths) / len(word_lengths), 2)
-        long_word_count = sum(1 for length in data["words_dic_all"]["word_lengths"] if length > 6)
+
+        # count "long words" (more than 6 letters)
+        long_word_count = sum(1 for length in word_lengths if length > 6)
     else:
         shortest_word_length = 0
         longest_word_length = 0
         average_word_length = 0
+        long_word_count = 0
 
-    # ---------------------- dictionary to numpy array ----------------------
+    # ---------------------- build list of [count, word] ----------------------
     pairs = []
     for w, c in word_dic.items():
-        pairs.append([c, w])     # [count, word]
+        pairs.append([c, w])  # same structure as before
 
-    #dtype=object ---> Type of the data (integer, float, Python object, etc.)
-    pairs = np.array(pairs, dtype=object)
+    # ---------------------- sort descending by count (replacement for np.argsort) ----------------------
+    pairs.sort(key=lambda x: x[0], reverse=True)
 
-    # sort by count (descending)
-    idx = np.argsort(pairs[:, 0].astype(int))[::-1]
-    top10 = pairs[idx][:10]
-
-    # convert a given array to an ordinary list with the same items, elements, or values
-    top10_list = top10.tolist()
+    # ---------------------- top 10 words ----------------------
+    top10_list = pairs[:10]
 
     # ---------------------- unique words and words appearing once ----------------------
     unique_word_count = len(word_dic)
-
-    words_appearing_once = 0
-    for w in word_dic:
-        if word_dic[w] == 1:
-            words_appearing_once += 1
+    words_appearing_once = sum(1 for w in word_dic if word_dic[w] == 1)
 
     return {
         "top_words": top10_list,
@@ -143,8 +141,9 @@ def word_analysis(data):
         "unique_word_count": unique_word_count,
         "words_appearing_once": words_appearing_once,
         "total_words": total_words,
-       "long_word_coun": long_word_count
+        "long_word_coun": long_word_count
     }
+
 
 def display_word_analysis(stats):
     print("\n============== Word Analysis ==============\n")

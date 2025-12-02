@@ -186,9 +186,9 @@ def main():
                 foldername=foldername
             )
             stats.display_lix(all_stats["lix"])
-    
+            reverse_verb_dict = cefr.load_reverse_verb_dict(path="verbs_reverse.json")
             cefr_dict = cefr.load_cefr_json(json_path="cefr_words.json")
-            level_count = cefr.cefr_levels(data, cefr_dict)
+            level_count = cefr.cefr_levels(data, cefr_dict, reverse_verb_dict)
             cefr.display_cefr_stats(level_count)
     
 

@@ -1,7 +1,6 @@
 import json
 import os 
 import matplotlib.pyplot as plt
-import numpy as np
 
 
 
@@ -126,8 +125,11 @@ def word_analysis_visuals(data, foldername):
     
     #---------------------- HISTOGRAM --------------------------------
     plt.figure(figsize=(10, 6))
-    lengths = np.array(word_lengths)
-    bins = np.linspace(0, lengths.max(), 25)
+    lengths = word_lengths
+    max_len = max(lengths) if lengths else 0
+    step = max_len / 25 if max_len > 0 else 1
+    bins = [i * step for i in range(26)]
+
     plt.hist(lengths, bins=bins, edgecolor="black")
     plt.title("Histogram of Word Lengths", fontsize=14, fontweight='bold')
     plt.xlabel("Word Length", fontsize=12)
@@ -147,21 +149,24 @@ def word_analysis_visuals(data, foldername):
 def sentence_analysis_visuals(data, foldername):
 
     # ---------------------- sentence length distribution ----------------------
-    sentence_lengths = data["sentence_lengths"]
-    arr = np.array(sentence_lengths)
-
-    # ---- Histogram bins with numpy ----
-    bins = np.arange(0, arr.max() + 5, 5)
+    arr = data["sentence_lengths"]
+    max_len = max(arr) if arr else 0
+    bins = list(range(0, max_len + 5, 5))
 
     # ---------------------- bar chart (top 5 sentence lengths) ----------------------
-    unique, counts = np.unique(arr, return_counts=True)
-    combined = np.column_stack((counts, unique))   # [ [freq, length], ... ]
-    idx = np.argsort(combined[:, 0])[::-1]         # sort by freq, descending
-    top5 = combined[idx][:5]
+    freq = {}
+    for length in arr:
+        freq[length] = freq.get(length, 0) + 1
 
-    top5_dict = {}
-    for freq, length in top5:
-        top5_dict[int(length)] = int(freq)
+    # Sort by count (largest first)
+    sorted_items = sorted(freq.items(), key=lambda x: x[1], reverse=True)
+
+    # Extract top 5
+    top5 = sorted_items[:5]
+
+    # Convert to dict for plotting
+    top5_dict = {length: count for length, count in top5}
+
 
     plt.figure(figsize=(9, 6))
     plt.bar(top5_dict.keys(), top5_dict.values(), edgecolor="black")
@@ -237,7 +242,7 @@ def character_analysis_visuals(data, foldername):
 
     # --- Character types (pie chart) ---
     plt.figure(figsize=(8, 6))
-    vals = np.array(list(type_distribution.values()))
+    vals = list(type_distribution.values())
     labels = list(type_distribution.keys())
     plt.pie(vals, labels=labels, autopct="%1.1f%%")
     plt.title("Character Type Distribution")

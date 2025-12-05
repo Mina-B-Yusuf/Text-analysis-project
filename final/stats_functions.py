@@ -89,8 +89,8 @@ def display_basic_statistics(stats):
 def display_lix(stats):
     print("\n======================================\n")
     print("---------further statistics-----------")
-    print(f"The LIX index is: {stats["Lix_index"]}")
-    print(f"Readability level: {stats["difficulty"]}")
+    print(f"The LIX index is: {stats['Lix_index']}")
+    print(f"Readability level: {stats['difficulty']}")
     print("\n======================================\n")
 
 #========================================================================================================================

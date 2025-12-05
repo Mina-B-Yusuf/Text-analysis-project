@@ -1,4 +1,3 @@
-import json
 import os 
 import matplotlib.pyplot as plt
 
@@ -42,14 +41,14 @@ def basic_statistics_visuals(data, foldername):
     char_labels = ["Letters", "Digits", "Spaces", "Punctuation"]
     char_values = [num_upper + num_lower, num_digits, num_spaces, num_punct]
 
-    explode = [0.05, 0.05, 0.05, 0.05]  # pull slices out slightly
+    explode = [0.05] * 4  
 
     plt.figure(figsize=(7, 7))
     plt.pie(char_values, labels=char_labels, autopct="%1.1f%%",
             startangle=140, explode=explode)
     plt.title("Character Type Distribution")
     plt.tight_layout()
-    plt.savefig(os.path.join(foldername, "basic_character_type_distribution.png"))
+    plt.savefig(os.path.join(foldername, "character_type_distribution.png"))
     plt.show()
     plt.close()
 
@@ -96,29 +95,22 @@ def word_analysis_visuals(data, foldername):
 
     
     #---------------------- Top 10 word statistics --------------------------------
-    pairs = list(word_dic.items())
-    items = []
-    for word, count in pairs:
-        items.append([count, word])
+    length_count_dic = {}
+    for length in word_lengths:
+        length_count_dic[length] = length_count_dic.get(length, 0) + 1
 
-    items.sort(reverse=True)
+    items_1 = sorted([[count, length] for length, count in length_count_dic.items()],
+                    reverse=True)
 
-    top_words_labels = []
-    top_words_values = []
-
-    for pair in items[:10]:
-        frequency = pair[0]
-        word = pair[1]
-        top_words_labels.append(word)
-        top_words_values.append(frequency)
+    top_lengths = [length for count, length in items_1[:10]]
+    top_freqs = [count for count, length in items_1[:10]]
 
     plt.figure(figsize=(9, 6))
-    plt.bar(top_words_labels, top_words_values, color='skyblue', edgecolor='black')
-    plt.xticks(rotation=45, fontsize=12)
-    plt.yticks(fontsize=12)
-    plt.title("Top 10 Most Common Words", fontsize=14, fontweight='bold')
+    plt.bar(top_lengths, top_freqs, edgecolor="black")
+    plt.xticks(top_lengths)
+    plt.title("Word Length Distribution (Top 10)")
     plt.tight_layout()
-    plt.savefig(os.path.join(foldername,"top_10_most_common_words.png"))
+    plt.savefig(os.path.join(foldername, "word_length_distribution.png"))
     plt.show()
     plt.close()
 
@@ -247,7 +239,6 @@ def character_analysis_visuals(data, foldername):
     plt.pie(vals, labels=labels, autopct="%1.1f%%")
     plt.title("Character Type Distribution")
     plt.tight_layout()
-    plt.savefig(os.path.join(foldername, "character_type_distribution.png"))
     plt.show()
     plt.close()
  

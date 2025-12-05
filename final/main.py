@@ -28,11 +28,6 @@ def run_all_analyses(data):
 
 def run_analysis(label, filename, data, stat_key, display_func, visual_func, all_stats, foldername):
     print(f"------{label}-------")
-
-    if filename is None or data is None:
-        print("please load a text file first (option 1). ")
-        input ("press Enter to reutrn to the menu...")
-        return
     
     print(F"processing {filename} ...")
     display_func(all_stats[stat_key])
@@ -176,12 +171,17 @@ def main():
                              File loaded successfully.""")
             measured_time = time.time() - before
             print(f"""
-                          The time it took to measure: {measured_time :.2f}
-                  =================================================
+                   The time it took to run all processes: {measured_time :.2f} seconds
+                  ====================================================
                     """)
 
 
         elif menu_choice == 2: # display basic statistics
+            if filename is None or data is None:
+                print("please load a text file first (option 1). ")
+                input ("press Enter to reutrn to the menu...")
+                continue
+            
             run_analysis(
                 label= "Basic Statistics", 
                 filename=filename, 
@@ -195,6 +195,11 @@ def main():
 
 
         elif menu_choice == 3: # word frequency analysis
+            if filename is None or data is None:
+                print("please load a text file first (option 1). ")
+                input ("press Enter to reutrn to the menu...")
+                continue
+            
             run_analysis(
                 label= "Word Analysis", 
                 filename=filename, 
@@ -208,6 +213,11 @@ def main():
 
 
         elif menu_choice == 4:
+            if filename is None or data is None:
+                print("please load a text file first (option 1). ")
+                input ("press Enter to reutrn to the menu...")
+                continue
+
             run_analysis(
                 label= "Sentence Analysis", 
                 filename=filename, 
@@ -221,6 +231,11 @@ def main():
 
 
         elif menu_choice == 5:
+            if filename is None or data is None:
+                print("please load a text file first (option 1). ")
+                input ("press Enter to reutrn to the menu...")
+                continue
+        
             run_analysis(
                 label= "Character Analysis", 
                 filename=filename, 
@@ -234,29 +249,31 @@ def main():
 
 
         elif menu_choice == 6:
-            if data is None:
-                print("Please load a text file first (option 1).")
-                input("Press Enter to return to the menu...")
+            if filename is None or data is None:
+                print("please load a text file first (option 1). ")
+                input ("press Enter to reutrn to the menu...")
                 continue
 
             print("Saving results...")
+            print("running visuals before saving them...")
             visuals.basic_statistics_visuals(data, foldername)
             visuals.word_analysis_visuals(data, foldername)
             visuals.sentence_analysis_visuals(data, foldername)
             visuals.character_analysis_visuals(data, foldername)
             ed.export_results(all_stats, foldername)
 
-            print(f"------{label}-------")
+            print("------Visuals and summary saved in folder-------")
 
 
         elif menu_choice == 7:
  
-            print(f"------Further statistics-------")
+            print("------ Further Statistics -------")
 
             if filename is None or data is None:
                 print("please load a text file first (option 1). ")
                 input ("press Enter to reutrn to the menu...")
-                return
+                continue
+                
             
             print(F"processing {filename} ...")
             stats.display_lix(all_stats["lix"])
@@ -270,7 +287,7 @@ def main():
             choice = input("Enter your choice: ").strip().lower()
 
             if choice == 'y':
-                return
+                continue
             else:
                 print("Doesn't matter you are returning to menu...")
 

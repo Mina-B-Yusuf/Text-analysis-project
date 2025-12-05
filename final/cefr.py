@@ -25,7 +25,6 @@ def cefr_levels(data, cefr_dict, reverse_verb_dict):
     for word, freq in data["words_dic_all"]["words_dic"].items():
         w = word.lower()
 
-        # convert verb variants → base form
         if w in reverse_verb_dict:
             base = reverse_verb_dict[w]
         else:
@@ -44,8 +43,22 @@ def cefr_levels(data, cefr_dict, reverse_verb_dict):
         "others": 0
     }
 
+    # ← add this block
+    morphology = [
+        (" s", ""),
+        ("ies", "y"),
+        ("es", ""),
+        ("s", ""),
+        ("ed", ""),
+        ("ing", ""),
+        ("eth", ""),
+        ("est", ""),
+        ("en", ""),
+    ]
+
     unknown_words = set()
     names_lower = set(n.lower() for n in data["words_dic_all"]["names"])
+
 
     for word, freq in normalized.items():
         word_clean = word.lower()
@@ -67,31 +80,15 @@ def cefr_levels(data, cefr_dict, reverse_verb_dict):
             if classified_any:
                 continue
 
-        # 3. Simple morphological stripping: 's, ies, es, s
-        base_forms = []
-
-        # possessive
-        if word_clean.endswith("'s") and len(word_clean) > 2:
-            base_forms.append(word_clean[:-2])
-
-        # plurals ending in "ies" → "y"
-        if word_clean.endswith("ies") and len(word_clean) > 3:
-            base_forms.append(word_clean[:-3] + "y")
-
-        # plurals ending in "es"
-        if word_clean.endswith("es") and len(word_clean) > 2:
-            base_forms.append(word_clean[:-2])
-
-        # simple "s"
-        if word_clean.endswith("s") and len(word_clean) > 1:
-            base_forms.append(word_clean[:-1])
-
+        # 3. Morphological stripping using suffix table
         matched = False
-        for form in base_forms:
-            if form in cefr_dict:
-                level_count[cefr_dict[form]] += 1
-                matched = True
-                break
+        for suf, repl in morphology:
+            if word_clean.endswith(suf) and len(word_clean) > len(suf):
+                base = word_clean[:-len(suf)] + repl
+                if base in cefr_dict:
+                    level_count[cefr_dict[base]] += 1
+                    matched = True
+                    break
 
         if matched:
             continue
@@ -100,6 +97,7 @@ def cefr_levels(data, cefr_dict, reverse_verb_dict):
         if word_clean in names_lower:
             level_count["names"] += 1
             continue
+
 
         # 5. Others + collect unknown
         unknown_words.add(word_clean)
@@ -111,6 +109,7 @@ def cefr_levels(data, cefr_dict, reverse_verb_dict):
             f.write(w + "\n")
 
     return level_count
+
 
 
 #Display stats

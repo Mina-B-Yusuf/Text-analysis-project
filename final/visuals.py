@@ -68,35 +68,6 @@ def word_analysis_visuals(data, foldername):
     #---------------------- word length statistics --------------------------------
     length_count_dic = {}
     for length in word_lengths:
-        if length not in length_count_dic:
-            length_count_dic[length] = 1
-        else:
-            length_count_dic[length] += 1
-
-    pairs_1 = list(length_count_dic.items())
-    items_1 = [[count, length] for (length, count) in pairs_1]
-    items_1.sort(reverse=True)
-
-    length_visual_dic = {}
-    for pair in items_1[:10]:
-        frequency = pair[0]
-        length = pair[1]
-        length_visual_dic[length] = frequency
-
-    plt.figure(figsize=(9, 6))
-    plt.bar(length_visual_dic.keys(), length_visual_dic.values(), color='skyblue', edgecolor='black')
-    plt.xticks(rotation=45, fontsize=12)
-    plt.yticks(fontsize=12)
-    plt.title("Word length distribution (Top 10)", fontsize=14, fontweight='bold')
-    plt.tight_layout()
-    plt.savefig(os.path.join(foldername,"word_length_distribution.png"))
-    plt.show()
-    plt.close()
-
-    
-    #---------------------- Top 10 word statistics --------------------------------
-    length_count_dic = {}
-    for length in word_lengths:
         length_count_dic[length] = length_count_dic.get(length, 0) + 1
 
     items_1 = sorted([[count, length] for length, count in length_count_dic.items()],
@@ -111,6 +82,30 @@ def word_analysis_visuals(data, foldername):
     plt.title("Word Length Distribution (Top 10)")
     plt.tight_layout()
     plt.savefig(os.path.join(foldername, "word_length_distribution.png"))
+    plt.show()
+    plt.close()
+    
+    #---------------------- Top 10 word statistics --------------------------------
+
+    pairs = []
+
+    for word, count in word_dic.items():
+        pairs.append([count, word])
+
+    pairs.sort(reverse=True)   # sort by highest frequency
+
+    top_words = pairs[:10]
+
+    top_words_labels = [word for count, word in top_words]
+    top_words_values = [count for count, word in top_words]
+
+    plt.figure(figsize=(9, 6))
+    plt.bar(top_words_labels, top_words_values, color='skyblue', edgecolor='black')
+    plt.xticks(rotation=45, fontsize=12)
+    plt.yticks(fontsize=12)
+    plt.title("Top 10 Most Common Words", fontsize=14, fontweight='bold')
+    plt.tight_layout()
+    plt.savefig(os.path.join(foldername, "top_10_most_common_words.png"))
     plt.show()
     plt.close()
 

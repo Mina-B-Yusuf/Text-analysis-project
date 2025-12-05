@@ -107,13 +107,14 @@ def check_script_directory():
     if os.path.normpath(cwd) != os.path.normpath(script_dir):
         print(f"""\n 
                                 OOOOoooopsies
-        You are running the program from the WRONG directory.
+    
+        You are running the program from the WRONG directory.\n
          - Current working directory: {cwd}
          - main.py location:         {script_dir}\n
-        Fix: Navigate to the folder where main.py is located before running it.
+        Fix: Navigate to the folder where main.py is located before running it.\n
                 Example:
-                cd \"{script_dir}\"
-                        Then run""")
+                cd \"{script_dir}\"\n
+                        Then run........""")
 
         return False
 
@@ -137,11 +138,12 @@ def main():
         ===============================================
         1. Load text file
         2. Basic statistics
-        3. word frequency analysis
+        3. Word frequency analysis
         4. Sentence analysis
         5. Character analysis
         6. Export results
-        7. Exit''')
+        7. Further statistics
+        8. Exit''')
         
         menu_choice = get_int("Enter your choice: ")
         if menu_choice is None:
@@ -190,12 +192,6 @@ def main():
                 all_stats=all_stats,
                 foldername=foldername
             )
-            stats.display_lix(all_stats["lix"])
-            reverse_verb_dict = cefr.load_reverse_verb_dict(path="verbs_reverse.json")
-            cefr_dict = cefr.load_cefr_json(json_path="cefr_words.json")
-            level_count = cefr.cefr_levels(data, cefr_dict, reverse_verb_dict)
-            cefr.display_cefr_stats(level_count)
-    
 
 
         elif menu_choice == 3: # word frequency analysis
@@ -223,6 +219,7 @@ def main():
                 foldername=foldername
             )
 
+
         elif menu_choice == 5:
             run_analysis(
                 label= "Character Analysis", 
@@ -249,10 +246,42 @@ def main():
             visuals.character_analysis_visuals(data, foldername)
             ed.export_results(all_stats, foldername)
 
+            print(f"------{label}-------")
+
+
+        elif menu_choice == 7:
+ 
+            print(f"------Further statistics-------")
+
+            if filename is None or data is None:
+                print("please load a text file first (option 1). ")
+                input ("press Enter to reutrn to the menu...")
+                return
+            
+            print(F"processing {filename} ...")
+            stats.display_lix(all_stats["lix"])
+            reverse_verb_dict = cefr.load_reverse_verb_dict(path="verbs_reverse.json")
+            cefr_dict = cefr.load_cefr_json(json_path="cefr_words.json")
+            level_count = cefr.cefr_levels(data, cefr_dict, reverse_verb_dict)
+            cefr.display_cefr_stats(level_count)
+            
+            print("menu? (y/n)")
+
+            choice = input("Enter your choice: ").strip().lower()
+
+            if choice == 'y':
+                return
+            else:
+                print("Doesn't matter you are returning to menu...")
+
 
         else: 
+            print("""
+                  Bye bye! End of pr0gram!
+            =====================================
+                  """)
             break      #break the loop
-            print (7)   # exit
+
         input("Press Enter to return to the menu...")
 
 if __name__ == "__main__":

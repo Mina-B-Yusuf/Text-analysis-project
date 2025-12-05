@@ -1,6 +1,6 @@
 import json
 
-
+#Loading data
 def load_cefr_json(json_path="cefr_words.json"):
     with open(json_path, "r", encoding="utf-8") as f:
         cefr_dict = json.load(f)
@@ -17,47 +17,103 @@ def load_reverse_verb_dict(path="verbs_reverse.json"):
         return {}
 
 
+#main cateorizing function
 def cefr_levels(data, cefr_dict, reverse_verb_dict):
     normalized = {}
 
+    # --- normalize words (verbs → base form) ---
     for word, freq in data["words_dic_all"]["words_dic"].items():
         w = word.lower()
 
-        # If verb variant exists → convert to base form
+        # convert verb variants → base form
         if w in reverse_verb_dict:
-            base = reverse_verb_dict[w]   # e.g. "abandoned" → "abandon"
+            base = reverse_verb_dict[w]
         else:
             base = w
 
-        # Add to normalized dictionary
-        if base in normalized:
-            normalized[base] += freq
-        else:
-            normalized[base] = freq
+        normalized[base] = normalized.get(base, 0) + freq
 
     level_count = {
-        "A1":0, 
-        "A2":0,
-        "B1":0, 
-        "B2":0,
-        "C1":0, 
-        "C2":0,
+        "A1": 0,
+        "A2": 0,
+        "B1": 0,
+        "B2": 0,
+        "C1": 0,
+        "C2": 0,
+        "names": 0,
         "others": 0
     }
+
+    unknown_words = set()
+    names_lower = set(n.lower() for n in data["words_dic_all"]["names"])
 
     for word, freq in normalized.items():
         word_clean = word.lower()
 
+        # 1. Direct CEFR match
         if word_clean in cefr_dict:
-            level = cefr_dict[word_clean]
-            level_count[level] += 1
-        else:
-            level_count["others"] += 1
+            level_count[cefr_dict[word_clean]] += 1
+            continue
+
+        # 2. Multi-word expressions (e.g. "able to")
+        if " " in word_clean:
+            parts = word_clean.split()
+            classified_any = False
+            for p in parts:
+                p_clean = p.lower()
+                if p_clean in cefr_dict:
+                    level_count[cefr_dict[p_clean]] += 1
+                    classified_any = True
+            if classified_any:
+                continue
+
+        # 3. Simple morphological stripping: 's, ies, es, s
+        base_forms = []
+
+        # possessive
+        if word_clean.endswith("'s") and len(word_clean) > 2:
+            base_forms.append(word_clean[:-2])
+
+        # plurals ending in "ies" → "y"
+        if word_clean.endswith("ies") and len(word_clean) > 3:
+            base_forms.append(word_clean[:-3] + "y")
+
+        # plurals ending in "es"
+        if word_clean.endswith("es") and len(word_clean) > 2:
+            base_forms.append(word_clean[:-2])
+
+        # simple "s"
+        if word_clean.endswith("s") and len(word_clean) > 1:
+            base_forms.append(word_clean[:-1])
+
+        matched = False
+        for form in base_forms:
+            if form in cefr_dict:
+                level_count[cefr_dict[form]] += 1
+                matched = True
+                break
+
+        if matched:
+            continue
+
+        # 4. Names
+        if word_clean in names_lower:
+            level_count["names"] += 1
+            continue
+
+        # 5. Others + collect unknown
+        unknown_words.add(word_clean)
+        level_count["others"] += 1
+
+    # write unknown words once
+    with open("unknown_words.txt", "w", encoding="utf-8") as f:
+        for w in sorted(unknown_words):
+            f.write(w + "\n")
 
     return level_count
 
 
-
+#Display stats
 def display_cefr_stats(cefr_result):
     total = sum(cefr_result.values())
 
@@ -76,23 +132,10 @@ def display_cefr_stats(cefr_result):
         print(f"{level:<7} {count:>10,}   {pct:>7.2f}%")
 
     print(
-        f"From A1 to C2, the level with the most unique words is {dominant_level} "
+        f"From A1 to C2, the level with the most words is {dominant_level} "
         f"with {dominant_count:,} occurrences."
     )
     print("=======================================\n")
 
-def running_cefr_excelsheet():
-    excel_file = "ENGLISH_CERF_WORDS.xlsx"     # CHANGE this to your filename
-    output_json = "cefr_words.json"
 
-    print("Loading Excel file...")
-    cefr_dict = load_cefr_dictionary(excel_file)
-
-    print(f"Loaded {len(cefr_dict)} CEFR entries.")
-    print("Saving dictionary as JSON...")
-
-    with open(output_json, "w", encoding="utf-8") as f:
-        json.dump(cefr_dict, f, indent=4, ensure_ascii=False)
-
-    print(f"Saved CEFR dictionary to {output_json}")
 
